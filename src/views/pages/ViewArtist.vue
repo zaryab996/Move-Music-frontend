@@ -4,6 +4,8 @@ import { useRoute } from 'vue-router';
 import api from '@/utils/axios';
 import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue';
 import { Icon } from '@iconify/vue';
+import { useRouter } from 'vue-router';
+const router = useRouter();
 
 const page = { title: 'View Artist' };
 const breadcrumbs = [{ title: 'View Artist', disabled: true, href: '#' }];
@@ -111,10 +113,10 @@ onMounted(fetchArtistData);
           <v-card-title class="font-weight-bold">Similar Artists</v-card-title>
           <v-data-table
             :headers="[
-              { text: 'Artist', value: 'name' },
-              { text: 'Genres', value: 'genres' },
-              { text: 'Popularity', value: 'popularity' },
-              { text: 'Action', value: 'action', sortable: false }
+              { title: 'Artist', value: 'name' },
+              { title: 'Genres', value: 'genres' },
+              { title: 'Popularity', value: 'popularity' },
+              { title: 'Action', value: 'action', sortable: false }
             ]"
             :items="similarArtists"
             :loading="loading"
@@ -150,7 +152,7 @@ onMounted(fetchArtistData);
                 width="24"
                 height="24"
                 class="cursor-pointer text-gray-500 hover:text-green-500 transition"
-                @click="$router.push(`/artist/${item.id}`)"
+                @click="router.push(`/artist/${item.id}`)"
               />
             </template>
           </v-data-table>

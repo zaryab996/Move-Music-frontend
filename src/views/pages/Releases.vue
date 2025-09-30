@@ -5,6 +5,8 @@ import UiParentCard from '@/components/shared/UiParentCard.vue';
 import { Icon } from '@iconify/vue';
 import api from '@/utils/axios';
 import Tag from 'primevue/tag';
+import { useRouter } from 'vue-router';
+const router = useRouter();
 
 const page = { title: 'Releases' };
 const breadcrumbs = [{ title: 'Releases', disabled: true, href: '#' }];
@@ -170,7 +172,7 @@ const statusMap: Record<string, { label: string; severity: string }> = {
                 width="24"
                 height="24"
                 class="cursor-pointer text-gray-500 hover:text-green-500 transition"
-                @click="$router.push(`/release/${data.id}`)"
+                @click="router.push(`/release/${data.id}`)"
               />
             </template>
           </Column>

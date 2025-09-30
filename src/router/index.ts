@@ -15,35 +15,25 @@ export const router = createRouter({
   ]
 });
 
-interface User {
-  // Define the properties and their types for the user data here
-  // For example:
-  id: number;
-  name: string;
-}
-
-// Assuming you have a type/interface for your authentication store
+// Match your actual Pinia store
 interface AuthStore {
-  user: User | null;
+  user: string | null;
   returnUrl: string | null;
   login(username: string, password: string): Promise<void>;
   logout(): void;
 }
 
 router.beforeEach(async (to, from, next) => {
-  // redirect to login page if not logged in and trying to access a restricted page
   const publicPages = [''];
   const auth: AuthStore = useAuthStore();
 
   const isPublicPage = publicPages.includes(to.path);
   const authRequired = !isPublicPage && to.matched.some((record) => record.meta.requiresAuth);
 
-  // User not logged in and trying to access a restricted page
   if (authRequired && !auth.user) {
-    auth.returnUrl = to.fullPath; // Save the intended page
+    auth.returnUrl = to.fullPath;
     next('/login');
   } else if (auth.user && to.path === '/login') {
-    // User logged in and trying to access the login page
     next({
       query: {
         ...to.query,
@@ -51,7 +41,6 @@ router.beforeEach(async (to, from, next) => {
       }
     });
   } else {
-    // All other scenarios, either public page or authorized access
     next();
   }
 });

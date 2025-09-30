@@ -4,6 +4,8 @@ import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue';
 import UiParentCard from '@/components/shared/UiParentCard.vue';
 import { Icon } from '@iconify/vue';
 import api from '@/utils/axios';
+import { useRouter } from 'vue-router';
+const router = useRouter();
 
 const page = { title: 'Artists' };
 const breadcrumbs = [{ title: 'Artists', disabled: true, href: '#' }];
@@ -146,7 +148,7 @@ const getDeezerLink = (id: string) => (id ? `https://www.deezer.com/artist/${id}
                 width="24"
                 height="24"
                 class="cursor-pointer text-gray-500 hover:text-green-500 transition"
-                @click="$router.push(`/artist/${data.id}`)"
+                @click="router.push(`/artist/${data.id}`)"
               />
             </template>
           </Column>
