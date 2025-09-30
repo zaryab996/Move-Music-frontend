@@ -197,9 +197,10 @@ onMounted(fetchArtistData);
             </template>
 
             <!-- Artists (comma separated) -->
-            <template #item.artists="{ item }">
-              {{ (item?.artists || []).map((a) => a.name).join(', ') }}
-            </template>
+           <template #item.artists="{ item }">
+  {{ (item?.artists || []).map((a: any) => a.name).join(', ') }}
+</template>
+
 
             <!-- Popularity -->
             <template #item.popularity="{ item }">

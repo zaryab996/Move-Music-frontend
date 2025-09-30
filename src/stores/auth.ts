@@ -1,13 +1,14 @@
 import { defineStore } from 'pinia';
 import api from '@/utils/axios';
 import { useRouter } from 'vue-router';
+
 const router = useRouter();
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    accessToken: localStorage.getItem('accessToken') || null,
-    refreshToken: localStorage.getItem('refreshToken') || null,
-    user: localStorage.getItem('user') || null,
+    accessToken: (localStorage.getItem('accessToken') as string | null) || null,
+    refreshToken: (localStorage.getItem('refreshToken') as string | null) || null,
+    user: (localStorage.getItem('user') as string | null) || null,
     returnUrl: null as string | null
   }),
   actions: {
@@ -17,9 +18,11 @@ export const useAuthStore = defineStore('auth', {
         this.accessToken = res.data.access;
         this.refreshToken = res.data.refresh;
         this.user = username;
-        localStorage.setItem('accessToken', this.accessToken);
-        localStorage.setItem('refreshToken', this.refreshToken);
-        localStorage.setItem('user', this.user);
+
+        if (this.accessToken) localStorage.setItem('accessToken', this.accessToken);
+        if (this.refreshToken) localStorage.setItem('refreshToken', this.refreshToken);
+        if (this.user) localStorage.setItem('user', this.user);
+
         router.push(this.returnUrl || '/dashboard');
       } catch (err: any) {
         throw err.response?.data || { message: 'Login failed' };
@@ -31,7 +34,9 @@ export const useAuthStore = defineStore('auth', {
       try {
         const res = await api.post('/auth/refresh-token', { refresh: this.refreshToken });
         this.accessToken = res.data.access;
-        localStorage.setItem('accessToken', this.accessToken);
+
+        if (this.accessToken) localStorage.setItem('accessToken', this.accessToken);
+
         return this.accessToken;
       } catch (err) {
         this.logout();
@@ -43,9 +48,11 @@ export const useAuthStore = defineStore('auth', {
       this.accessToken = null;
       this.refreshToken = null;
       this.user = null;
+
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
       localStorage.removeItem('user');
+
       router.push('/login');
     }
   }

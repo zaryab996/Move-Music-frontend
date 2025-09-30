@@ -129,10 +129,10 @@ const statusMap: Record<string, { label: string; severity: string }> = {
           </Column>
           <Column field="status" header="Status" sortable>
             <template #body="{ data }">
-              <span v-if="statusMap[data.status]" :class="`badge badge-${statusMap[data.status].severity}`">
-                {{ statusMap[data.status].label }}
-              </span>
-              <span v-else class="badge badge-secondary">{{ data.status }}</span>
+            <span v-if="statusMap[data.status]" :class="`badge badge-${statusMap[data.status]?.severity}`">
+  {{ statusMap[data.status]?.label }}
+</span>
+<span v-else class="badge badge-secondary">{{ data.status }}</span>
             </template>
           </Column>
 
@@ -159,7 +159,7 @@ const statusMap: Record<string, { label: string; severity: string }> = {
                   <template #activator="{ props }">
                     <Icon v-bind="props" icon="mdi:bell-ring" color="#d93025" width="20" style="cursor: pointer" />
                   </template>
-                  <span>{{ data.acr_alert.cover_results || 'No alert details' }}</span>
+          <span>{{ data.acr_alert?.cover_results || 'No alert details' }}</span>
                 </v-tooltip>
               </div>
             </template>

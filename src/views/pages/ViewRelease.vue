@@ -52,9 +52,10 @@ async function openTrack(trackId: number) {
           <h2 class="text-h4 font-weight-bold mb-2">{{ release.name }}</h2>
 
           <!-- Artist(s) -->
-          <p class="text-h6 text-primary font-weight-medium mb-4">
-            {{ release.artists.map((a) => a.artist.name).join(', ') }}
-          </p>
+        <p class="text-h6 text-primary font-weight-medium mb-4">
+  {{ release.artists.map((a: any) => a.artist.name).join(', ') }}
+</p>
+
 
           <!-- Status -->
           <v-chip

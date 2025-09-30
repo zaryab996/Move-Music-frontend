@@ -50,10 +50,18 @@ const fetchData = async () => {
 watch([currentPage, rows, search], fetchData, { immediate: true });
 
 // helpers for links
-const getSpotifyLink = (id: string) => (id ? `https://open.spotify.com/artist/${id.replace('spotify:artist:', '')}` : null);
-const getAppleLink = (id: string) => (id ? `https://music.apple.com/artist/${id}` : null);
-const getAmazonLink = (id: string) => (id ? `https://music.amazon.com/artists/${id}` : null);
-const getDeezerLink = (id: string) => (id ? `https://www.deezer.com/artist/${id}` : null);
+const getSpotifyLink = (id?: string): string | undefined =>
+  id ? `https://open.spotify.com/artist/${id.replace('spotify:artist:', '')}` : undefined;
+
+const getAppleLink = (id?: string): string | undefined =>
+  id ? `https://music.apple.com/artist/${id}` : undefined;
+
+const getAmazonLink = (id?: string): string | undefined =>
+  id ? `https://music.amazon.com/artists/${id}` : undefined;
+
+const getDeezerLink = (id?: string): string | undefined =>
+  id ? `https://www.deezer.com/artist/${id}` : undefined;
+
 </script>
 
 <template>
