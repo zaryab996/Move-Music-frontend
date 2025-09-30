@@ -21,7 +21,7 @@ export const useAuthStore = defineStore('auth', {
         if (this.refreshToken) localStorage.setItem('refreshToken', this.refreshToken);
         if (this.user) localStorage.setItem('user', this.user);
 
-        router.push(this.returnUrl || '/dashboard');
+        router.push(this.returnUrl || '/releases');
       } catch (err: any) {
         throw err.response?.data || { message: 'Login failed' };
       }

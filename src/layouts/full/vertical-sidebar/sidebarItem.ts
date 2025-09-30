@@ -30,11 +30,11 @@ export interface menu {
 }
 
 const sidebarItem: menu[] = [
-  {
-    title: 'Dashboard',
-    icon: DashboardIcon,
-    to: '/dashboard'
-  },
+  // {
+  //   title: 'Dashboard',
+  //   icon: DashboardIcon,
+  //   to: '/dashboard'
+  // },
 
   {
     title: 'Releases',

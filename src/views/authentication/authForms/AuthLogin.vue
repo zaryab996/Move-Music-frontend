@@ -21,11 +21,11 @@ function validate(values: any, { setErrors }: any) {
 </script>
 
 <template>
-  <Form @submit="validate" class="mt-7 loginForm" v-slot="{ errors, isSubmitting }">
+  <Form @submit="validate" class="mt-6 loginForm" v-slot="{ errors, isSubmitting }">
     <v-text-field
       v-model="username"
       label="Username"
-      class="mt-4 mb-8"
+      class="mt-4 mb-4"
       required
       density="comfortable"
       hide-details="auto"
@@ -46,7 +46,7 @@ function validate(values: any, { setErrors }: any) {
       class="pwdInput"
     ></v-text-field>
 
-    <div class="d-sm-flex align-center mt-2 mb-7 mb-sm-0"></div>
+    <div class="d-sm-flex align-center mt-2 mb-3 mb-sm-0"></div>
     <v-btn color="secondary" :loading="isSubmitting" block class="mt-2" variant="flat" size="large" :disabled="valid" type="submit">
       Sign In</v-btn
     >
