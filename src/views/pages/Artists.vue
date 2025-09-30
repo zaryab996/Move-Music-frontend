@@ -4,8 +4,7 @@ import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue';
 import UiParentCard from '@/components/shared/UiParentCard.vue';
 import { Icon } from '@iconify/vue';
 import api from '@/utils/axios';
-import { useRouter } from 'vue-router';
-const router = useRouter();
+import { router } from '@/router';
 
 const page = { title: 'Artists' };
 const breadcrumbs = [{ title: 'Artists', disabled: true, href: '#' }];

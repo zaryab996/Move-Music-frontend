@@ -5,8 +5,7 @@ import UiParentCard from '@/components/shared/UiParentCard.vue';
 import { Icon } from '@iconify/vue';
 import api from '@/utils/axios';
 import Tag from 'primevue/tag';
-import { useRouter } from 'vue-router';
-const router = useRouter();
+import { router } from '@/router';
 
 const page = { title: 'Releases' };
 const breadcrumbs = [{ title: 'Releases', disabled: true, href: '#' }];
