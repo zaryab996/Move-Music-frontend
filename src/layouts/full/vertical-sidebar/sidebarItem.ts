@@ -1,6 +1,7 @@
 import {
   CircleIcon,
   WindmillIcon,
+  TagIcon,
   TypographyIcon,
   ShadowIcon,
   PaletteIcon,
@@ -10,7 +11,9 @@ import {
   ListIcon,
   DashboardIcon,
   BrandChromeIcon,
-  HelpIcon
+  HelpIcon,
+  FileTextIcon,
+  PackageIcon
 } from 'vue-tabler-icons';
 
 export interface menu {
@@ -45,6 +48,21 @@ const sidebarItem: menu[] = [
     title: 'Artists',
     icon: UserIcon,
     to: '/artists'
+  },
+  {
+    title: 'Labels',
+    icon: TagIcon,
+    to: '/labels'
+  },
+  {
+    title: 'Delivered List',
+    icon: PackageIcon,
+    to: '/delivered'
+  },
+  {
+    title: 'Statements',
+    icon: FileTextIcon,
+    to: '/statements'
   }
 ];
 

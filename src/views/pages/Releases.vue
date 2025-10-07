@@ -4,9 +4,9 @@ import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue';
 import UiParentCard from '@/components/shared/UiParentCard.vue';
 import { Icon } from '@iconify/vue';
 import api from '@/utils/axios';
-import Tag from 'primevue/tag';
-import { router } from '@/router';
+import Dropdown from 'primevue/dropdown'; // ✅ ADD THIS
 
+import { useRouter } from 'vue-router';
 const page = { title: 'Releases' };
 const breadcrumbs = [{ title: 'Releases', disabled: true, href: '#' }];
 
@@ -59,6 +59,19 @@ const statusMap: Record<string, { label: string; severity: string }> = {
   delivering: { label: 'Delivering', severity: 'primary' },
   distributed: { label: 'Distributed', severity: 'primary' }
 };
+
+const router = useRouter();
+
+function handleAction(action: string, data: any) {
+  if (action === 'view') {
+    // redirect to view page by ID
+    router.push(`/release/${data.id}`);
+  } else if (action === 'delivered') {
+    // redirect to delivered list by release name
+    router.push(`/delivered/release/${data.name}`);
+  }
+}
+
 </script>
 
 <template>
@@ -94,7 +107,7 @@ const statusMap: Record<string, { label: string; severity: string }> = {
           </template>
 
           <!-- Name with artwork -->
-          <Column field="name" header="Name" sortable>
+          <Column field="name" header="Name">
             <template #body="{ data }">
               <div style="display: flex; align-items: center; gap: 10px">
                 <img
@@ -111,27 +124,27 @@ const statusMap: Record<string, { label: string; severity: string }> = {
             </template>
           </Column>
 
-          <Column field="artist" header="Artist" sortable>
+          <Column field="artist" header="Artist">
             <template #body="{ data }">
               <p>{{ data.artists }}</p>
             </template>
           </Column>
 
-          <Column field="catalogue_number" header="Cat. No." sortable />
+          <Column field="catalogue_number" header="Cat. No." />
           <Column field="ean" header="UPC. No." />
-          <Column field="official_date" header="Release Date" sortable>
+          <Column field="official_date" header="Release Date">
             <template #body="{ data }">
               <p>Official: {{ data.official_date }}</p>
               <p v-if="data.exclusive_date">Exclusive: {{ data.exclusive_date }}</p>
               <p v-else>No Exclusive Date</p>
             </template>
           </Column>
-          <Column field="status" header="Status" sortable>
+          <Column field="status" header="Status">
             <template #body="{ data }">
-            <span v-if="statusMap[data.status]" :class="`badge badge-${statusMap[data.status]?.severity}`">
-  {{ statusMap[data.status]?.label }}
-</span>
-<span v-else class="badge badge-secondary">{{ data.status }}</span>
+              <span v-if="statusMap[data.status]" :class="`badge badge-${statusMap[data.status]?.severity}`">
+                {{ statusMap[data.status]?.label }}
+              </span>
+              <span v-else class="badge badge-secondary">{{ data.status }}</span>
             </template>
           </Column>
 
@@ -158,23 +171,28 @@ const statusMap: Record<string, { label: string; severity: string }> = {
                   <template #activator="{ props }">
                     <Icon v-bind="props" icon="mdi:bell-ring" color="#d93025" width="20" style="cursor: pointer" />
                   </template>
-          <span>{{ data.acr_alert?.cover_results || 'No alert details' }}</span>
+                  <span>{{ data.acr_alert?.cover_results || 'No alert details' }}</span>
                 </v-tooltip>
               </div>
             </template>
           </Column>
 
-          <Column header="Action">
-            <template #body="{ data }">
-              <Icon
-                icon="mdi:eye-outline"
-                width="24"
-                height="24"
-                class="cursor-pointer text-gray-500 hover:text-green-500 transition"
-                @click="router.push(`/release/${data.id}`)"
-              />
-            </template>
-          </Column>
+       <Column header="Action">
+  <template #body="{ data }">
+    <Dropdown
+      :options="[
+        { label: 'View', value: 'view' },
+        { label: 'Delivered List', value: 'delivered' }
+      ]"
+      optionLabel="label"
+      optionValue="value"
+      placeholder="Action"
+      @change="(e) => handleAction(e.value, data)"
+      class="w-60"
+    />
+  </template>
+</Column>
+
         </DataTable>
       </UiParentCard>
     </v-col>

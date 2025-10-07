@@ -52,15 +52,11 @@ watch([currentPage, rows, search], fetchData, { immediate: true });
 const getSpotifyLink = (id?: string): string | undefined =>
   id ? `https://open.spotify.com/artist/${id.replace('spotify:artist:', '')}` : undefined;
 
-const getAppleLink = (id?: string): string | undefined =>
-  id ? `https://music.apple.com/artist/${id}` : undefined;
+const getAppleLink = (id?: string): string | undefined => (id ? `https://music.apple.com/artist/${id}` : undefined);
 
-const getAmazonLink = (id?: string): string | undefined =>
-  id ? `https://music.amazon.com/artists/${id}` : undefined;
+const getAmazonLink = (id?: string): string | undefined => (id ? `https://music.amazon.com/artists/${id}` : undefined);
 
-const getDeezerLink = (id?: string): string | undefined =>
-  id ? `https://www.deezer.com/artist/${id}` : undefined;
-
+const getDeezerLink = (id?: string): string | undefined => (id ? `https://www.deezer.com/artist/${id}` : undefined);
 </script>
 
 <template>
@@ -92,8 +88,8 @@ const getDeezerLink = (id?: string): string | undefined =>
           <template #loading>
             <div class="music-loader"><span></span><span></span><span></span><span></span><span></span></div>
           </template>
-          <!-- <Column field="id" header="ID" sortable /> -->
-          <Column field="name" header="Artist Name" sortable>
+          <!-- <Column field="id" header="ID"  /> -->
+          <Column field="name" header="Artist Name">
             <template #body="{ data }">
               <div style="display: flex; align-items: center; gap: 10px">
                 <img

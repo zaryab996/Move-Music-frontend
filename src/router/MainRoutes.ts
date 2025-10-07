@@ -42,6 +42,31 @@ const MainRoutes = {
       path: '/release/:id',
       component: () => import('@/views/pages/ViewRelease.vue'),
       props: true
+    },
+    {
+      name: 'Labels',
+      path: '/labels',
+      component: () => import('@/views/pages/Labels.vue')
+    },
+    {
+      name: 'DeliveredList',
+      path: '/delivered',
+      component: () => import('@/views/pages/DeliveredList.vue')
+    },
+    {
+      name: 'StoreDeliveredList',
+      path: '/delivered/:id',
+      component: () => import('@/views/pages/ViewDeliveredList.vue')
+    },
+    {
+      name: 'Statements',
+      path: '/statements',
+      component: () => import('@/views/pages/Statements.vue')
+    },
+    {
+      name: 'ReleaseDeliveredList',
+        path: '/delivered/release/:name',
+      component: () => import('@/views/pages/DeliveredList.vue')
     }
   ]
 };
