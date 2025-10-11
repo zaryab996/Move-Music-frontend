@@ -8,46 +8,40 @@ const api = axios.create({
 
 api.interceptors.request.use((config) => {
   const auth = useAuthStore();
-
-  // Prefer store, fallback to localStorage
   const accessToken = auth.accessToken || localStorage.getItem('accessToken');
   if (accessToken) {
     config.headers.Authorization = `Bearer ${accessToken}`;
   }
-
   return config;
 });
+
 api.interceptors.response.use(
-  async (response) => {
-    const auth = useAuthStore();
+  (response) => response,
 
-    // Some APIs return 200 + error payload
-    if (response.data?.code === 'token_not_valid' && auth.refreshToken) {
-      try {
-        const newAccess = await auth.refreshAccessToken();
-        if (newAccess) {
-          // retry original request with new token
-          const originalRequest = response.config;
-          originalRequest.headers.Authorization = `Bearer ${newAccess}`;
-          return api(originalRequest);
-        }
-      } catch (e) {
-        console.error('[Axios Interceptor] Refresh failed', e);
-      }
-    }
-
-    return response;
-  },
   async (error) => {
     const auth = useAuthStore();
     const originalRequest = error.config;
 
-    if (error.response?.status === 401 && auth.refreshToken && !originalRequest._retry) {
+    if (!auth.refreshToken || originalRequest._retry) {
+      return Promise.reject(error);
+    }
+
+    if (originalRequest.url?.includes('/auth/refresh-token')) {
+      return Promise.reject(error);
+    }
+
+    if (error.response?.status === 401) {
       originalRequest._retry = true;
-      const newAccess = await auth.refreshAccessToken();
-      if (newAccess) {
-        originalRequest.headers.Authorization = `Bearer ${newAccess}`;
-        return api(originalRequest);
+
+      try {
+        const newAccess = await auth.refreshAccessToken();
+
+        if (newAccess) {
+          originalRequest.headers.Authorization = `Bearer ${newAccess}`;
+          return api(originalRequest);
+        }
+      } catch (refreshErr) {
+        auth.logout();
       }
     }
 

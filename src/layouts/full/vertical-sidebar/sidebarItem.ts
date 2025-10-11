@@ -1,20 +1,4 @@
-import {
-  CircleIcon,
-  WindmillIcon,
-  TagIcon,
-  TypographyIcon,
-  ShadowIcon,
-  PaletteIcon,
-  KeyIcon,
-  BugIcon,
-  UserIcon,
-  ListIcon,
-  DashboardIcon,
-  BrandChromeIcon,
-  HelpIcon,
-  FileTextIcon,
-  PackageIcon
-} from 'vue-tabler-icons';
+import { TagIcon, UserIcon, ListIcon, FileTextIcon, PackageIcon, Receipt2Icon, ChartPieIcon } from 'vue-tabler-icons';
 
 export interface menu {
   header?: string;
@@ -33,12 +17,6 @@ export interface menu {
 }
 
 const sidebarItem: menu[] = [
-  // {
-  //   title: 'Dashboard',
-  //   icon: DashboardIcon,
-  //   to: '/dashboard'
-  // },
-
   {
     title: 'Releases',
     icon: ListIcon,
@@ -63,6 +41,16 @@ const sidebarItem: menu[] = [
     title: 'Statements',
     icon: FileTextIcon,
     to: '/statements'
+  },
+  {
+    title: 'Invoices',
+    icon: Receipt2Icon,
+    to: '/invoices'
+  },
+  {
+    title: 'Trends',
+    icon: ChartPieIcon,
+    to: '/trends'
   }
 ];
 

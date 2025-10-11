@@ -1,19 +1,29 @@
 <script setup lang="ts">
 const props = defineProps({
-  title: String
+  title: {
+    type: String,
+    default: ''
+  }
 });
 </script>
 
-// ===============================|| Ui Parent Card||=============================== //
 <template>
   <v-card variant="flat">
     <v-card-item>
-      <div class="d-sm-flex align-center justify-space-between">
-        <v-card-title>{{ props.title }}</v-card-title>
-        <slot name="action"></slot>
+      <div class="w-100">
+        <!-- ✅ If user provides custom title slot -->
+        <slot name="title">
+          <!-- ✅ Otherwise use default layout -->
+          <div class="d-sm-flex align-center justify-space-between w-100">
+            <v-card-title>{{ props.title }}</v-card-title>
+            <slot name="action"></slot>
+          </div>
+        </slot>
       </div>
     </v-card-item>
+
     <v-divider></v-divider>
+
     <v-card-text>
       <slot />
     </v-card-text>

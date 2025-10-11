@@ -24,7 +24,7 @@ const authStore = useAuthStore();
 
     <v-divider></v-divider>
     <!-- <perfect-scrollbar style="height: calc(100vh - 300px); max-height: 515px"> -->
-        <perfect-scrollbar style="height: 100%;">
+    <perfect-scrollbar style="height: 100%">
       <!-- <div class="bg-lightwarning rounded-md pa-5 my-3 circle sm-circle lg-circle">
         <h4>Upgrade your plan</h4>
         <h6 class="text-subtitle-2 text-medium-emphasis mr-11 pr-11 mb-3 mt-2">70% discount for 1 years subscriptions.</h6>
@@ -59,17 +59,13 @@ const authStore = useAuthStore();
           <v-list-item-title class="text-subtitle-2"> Account Settings</v-list-item-title>
         </v-list-item> -->
 
-        <!-- <v-list-item color="secondary" rounded="md">
-          <template v-slot:prepend>
+        <v-list-item color="secondary" rounded="md" to="/profile" link>
+          <template #prepend>
             <UserIcon size="20" class="mr-2" />
           </template>
 
-          <v-list-item-title class="text-subtitle-2"> Social Profile</v-list-item-title>
-
-          <template v-slot:append>
-            <v-chip color="warning" class="text-white" text="02" variant="flat" size="small" />
-          </template>
-        </v-list-item> -->
+          <v-list-item-title class="text-subtitle-2">My Profile</v-list-item-title>
+        </v-list-item>
 
         <v-list-item @click="authStore.logout()" color="secondary" rounded="md">
           <template v-slot:prepend>

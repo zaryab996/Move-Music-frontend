@@ -2,18 +2,13 @@
 import { ref, watch } from 'vue';
 import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue';
 import UiParentCard from '@/components/shared/UiParentCard.vue';
-import { Icon } from '@iconify/vue';
 import api from '@/utils/axios';
-import Tag from 'primevue/tag';
-import { router } from '@/router';
 
 const page = { title: 'Labels' };
 const breadcrumbs = [{ title: 'Labels', disabled: true, href: '#' }];
-
 const labels = ref<any[]>([]);
 const loading = ref(false);
 const total = ref(0);
-
 const rows = ref(10);
 const currentPage = ref(1);
 const search = ref('');

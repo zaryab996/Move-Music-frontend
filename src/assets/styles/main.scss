@@ -1,0 +1,229 @@
+
+.music-loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  height: 80px;
+}
+
+.music-loader span {
+  width: 6px;
+  height: 20px;
+  background: linear-gradient(180deg, #1db954, #1ed760);
+  border-radius: 3px;
+  animation: bounce 1s infinite ease-in-out;
+}
+
+.music-loader span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.music-loader span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+.music-loader span:nth-child(4) {
+  animation-delay: 0.6s;
+}
+.music-loader span:nth-child(5) {
+  animation-delay: 0.8s;
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: scaleY(0.3);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+.p-paginator {
+  display: block !important;
+}
+.p-paginator .p-dropdown {
+  float: right !important;
+}
+.p-paginator .p-paginator-current {
+  float: right !important;
+}
+.p-datatable-loading-overlay {
+  background-color: rgb(255, 255, 255);
+}
+.badge {
+  display: inline-block;
+  padding: 13px 20px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+.badge-danger {
+  background: #d93025;
+  color: #ffffff;
+}
+
+.badge-warning {
+  background: #e6a700;
+  color: #ffffff;
+}
+
+.badge-success {
+  background: #188038;
+  color: #ffffff;
+}
+
+.badge-primary {
+  background: #000a60; /* custom primary */
+  color: #ffffff;
+}
+
+.badge-info {
+  background: #006064;
+  color: #ffffff;
+}
+
+.badge-secondary {
+  background: #3f57bc; /* custom secondary */
+  color: #ffffff;
+}
+.danger-tooltip {
+  background-color: #fdecea !important; /* light red */
+  color: #d93025 !important; /* danger red */
+  font-size: 13px;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+.space-y-3 > * + * {
+  margin-top: 0.75rem;
+}
+
+.font-mono {
+  font-family: 'Roboto Mono', monospace;
+}
+
+.w-100 {
+  width: 100%;
+}
+.profile-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.profile-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.avatar-container {
+  background: linear-gradient(135deg, #6366f1, #3b82f6);
+  border-radius: 50%;
+  padding: 4px;
+}
+
+.profile-avatar {
+  background: white;
+  color: #3b82f6;
+  font-weight: 600;
+  border: 3px solid #e5e7eb;
+}
+
+.avatar-text {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.hoverable {
+  transition: background-color 0.25s ease;
+}
+
+.hoverable:hover {
+  background-color: #f3f4f6;
+}
+
+.v-btn {
+  font-weight: 500;
+  border-radius: 10px;
+}
+.danger-tooltip {
+  max-width: 400px !important;
+  white-space: normal !important;
+  text-align: left;
+  line-height: 1.4;
+  padding: 15px !important;
+  border-radius: 15px !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+}
+.store-tooltip {
+  position: absolute;
+  top: 35px;
+  left: 0;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 8px 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  min-width: 250px;
+}
+
+.store-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid #f2f2f2;
+}
+
+.store-item:last-child {
+  border-bottom: none;
+}
+
+.store-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.store-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+#world-map {
+  width: 100%;
+  height: 600px;
+}
+
+/* 🧭 Tooltip styling */
+.tooltip-box {
+  background-color: rgba(0, 0, 0, 0.85);
+  color: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  pointer-events: none;
+  position: absolute;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  transition: opacity 0.15s ease;
+  z-index: 50;
+}
+
+path:hover {
+  stroke: #111 !important;
+  stroke-width: 1.2;
+  cursor: pointer;
+  filter: brightness(1.15);
+}
+
+#map-legend svg {
+  font-family: 'Inter', sans-serif;
+}
+
+#map-legend {
+  margin-top: 170px;
+}

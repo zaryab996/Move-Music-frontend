@@ -1,22 +1,22 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
 import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue';
 import UiParentCard from '@/components/shared/UiParentCard.vue';
 import { Icon } from '@iconify/vue';
 import api from '@/utils/axios';
-import Dropdown from 'primevue/dropdown'; // ✅ ADD THIS
-
+import Dropdown from 'primevue/dropdown';
 import { useRouter } from 'vue-router';
+
 const page = { title: 'Releases' };
 const breadcrumbs = [{ title: 'Releases', disabled: true, href: '#' }];
-
 const releases = ref<any[]>([]);
 const loading = ref(false);
 const total = ref(0);
-
 const rows = ref(10);
 const currentPage = ref(1);
 const search = ref('');
+
+const router = useRouter();
 
 // fetch paginated data
 const fetchData = async () => {
@@ -44,9 +44,9 @@ const fetchData = async () => {
     loading.value = false;
   }
 };
-// script setup
 
 watch([currentPage, rows, search], fetchData, { immediate: true });
+
 const statusMap: Record<string, { label: string; severity: string }> = {
   offline: { label: 'Offline', severity: 'danger' },
   takedown_request: { label: 'Takedown Requested', severity: 'danger' },
@@ -60,18 +60,60 @@ const statusMap: Record<string, { label: string; severity: string }> = {
   distributed: { label: 'Distributed', severity: 'primary' }
 };
 
-const router = useRouter();
-
+// router actions
 function handleAction(action: string, data: any) {
   if (action === 'view') {
-    // redirect to view page by ID
     router.push(`/release/${data.id}`);
   } else if (action === 'delivered') {
-    // redirect to delivered list by release name
     router.push(`/delivered/release/${data.name}`);
   }
 }
 
+// =============== ✅ Store URL Tooltip Logic ==================
+const activeTooltip = ref<number | null>(null);
+
+function toggleTooltip(id: number) {
+  activeTooltip.value = activeTooltip.value === id ? null : id;
+}
+
+// close tooltip when clicking outside
+function handleClickOutside(e: MouseEvent) {
+  const tooltipElements = document.querySelectorAll('.store-tooltip');
+  let clickedInside = false;
+  tooltipElements.forEach((tooltip) => {
+    if (tooltip.contains(e.target as Node)) clickedInside = true;
+  });
+  if (!clickedInside) activeTooltip.value = null;
+}
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleClickOutside);
+});
+
+function copyToClipboard(url: string) {
+  navigator.clipboard.writeText(url);
+}
+
+function openInNewTab(url: string) {
+  window.open(url, '_blank');
+}
+
+function getStoreIcon(store: string) {
+  const icons: Record<string, { icon: string; color: string }> = {
+    spotify: { icon: 'mdi:spotify', color: 'green' },
+    'apple-music': { icon: 'mdi:apple', color: 'red' },
+    deezer: { icon: 'simple-icons:deezer', color: '#00C7F2' },
+    'amazon-music': { icon: 'mdi:amazon', color: 'orange' },
+    beatport: { icon: 'simple-icons:beatport', color: '#A4FF00' },
+    traxsource: { icon: 'mdi:music', color: '#3498db' },
+    youtube: { icon: 'mdi:youtube', color: 'red' }
+  };
+  return icons[store] || { icon: 'mdi:music', color: '#666' };
+}
 </script>
 
 <template>
@@ -105,7 +147,6 @@ function handleAction(action: string, data: any) {
           <template #loading>
             <div class="music-loader"><span></span><span></span><span></span><span></span><span></span></div>
           </template>
-
           <!-- Name with artwork -->
           <Column field="name" header="Name">
             <template #body="{ data }">
@@ -123,13 +164,11 @@ function handleAction(action: string, data: any) {
               </div>
             </template>
           </Column>
-
           <Column field="artist" header="Artist">
             <template #body="{ data }">
               <p>{{ data.artists }}</p>
             </template>
           </Column>
-
           <Column field="catalogue_number" header="Cat. No." />
           <Column field="ean" header="UPC. No." />
           <Column field="official_date" header="Release Date">
@@ -147,8 +186,33 @@ function handleAction(action: string, data: any) {
               <span v-else class="badge badge-secondary">{{ data.status }}</span>
             </template>
           </Column>
+          <Column header="Store URLs">
+            <template #body="{ data }">
+              <div class="relative">
+                <Icon
+                  icon="mdi:link-variant"
+                  :color="data.store_urls?.length ? '#1976D2' : 'gray'"
+                  width="22"
+                  style="cursor: pointer"
+                  @click.stop="data.store_urls?.length ? toggleTooltip(data.id) : null"
+                />
 
-          <!-- <Column field="store_urls" header="Store Urls" /> -->
+                <!-- Tooltip Dropdown -->
+                <div v-if="activeTooltip === data.id && data.store_urls?.length" class="store-tooltip">
+                  <div v-for="(store, index) in data.store_urls" :key="index" class="store-item">
+                    <div class="store-left">
+                      <Icon :icon="getStoreIcon(store.store_name).icon" :color="getStoreIcon(store.store_name).color" width="22" />
+                      <span>{{ store.store_name }}</span>
+                    </div>
+                    <div class="store-actions">
+                      <Icon icon="mdi:content-copy" width="18" style="cursor: pointer" @click.stop="copyToClipboard(store.url)" />
+                      <Icon icon="mdi:open-in-new" width="18" style="cursor: pointer" @click.stop="openInNewTab(store.url)" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </Column>
           <Column header="QC">
             <template #body="{ data }">
               <div>
@@ -162,37 +226,40 @@ function handleAction(action: string, data: any) {
               </div>
             </template>
           </Column>
-
           <Column header="Alert">
             <template #body="{ data }">
               <div>
                 <Icon v-if="!data.has_acr_alert" icon="mdi:bell-ring-outline" color="gray" width="20" />
-                <v-tooltip v-else location="top" content-class="danger-tooltip">
+                <v-tooltip v-else location="top" class="tool" content-class="danger-tooltip">
                   <template #activator="{ props }">
                     <Icon v-bind="props" icon="mdi:bell-ring" color="#d93025" width="20" style="cursor: pointer" />
                   </template>
-                  <span>{{ data.acr_alert?.cover_results || 'No alert details' }}</span>
+                  <span class="">
+                    {{
+                      data.acr_alert
+                        ? data.release_user_declaration?.admin_message || 'No admin message'
+                        : data.acr_alert?.cover_results || 'No alert details'
+                    }}
+                  </span>
                 </v-tooltip>
               </div>
             </template>
           </Column>
-
-       <Column header="Action">
-  <template #body="{ data }">
-    <Dropdown
-      :options="[
-        { label: 'View', value: 'view' },
-        { label: 'Delivered List', value: 'delivered' }
-      ]"
-      optionLabel="label"
-      optionValue="value"
-      placeholder="Action"
-      @change="(e) => handleAction(e.value, data)"
-      class="w-60"
-    />
-  </template>
-</Column>
-
+          <Column header="Action">
+            <template #body="{ data }">
+              <Dropdown
+                :options="[
+                  { label: 'View', value: 'view' },
+                  { label: 'Delivered List', value: 'delivered' }
+                ]"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Action"
+                @change="(e) => handleAction(e.value, data)"
+                class="w-60"
+              />
+            </template>
+          </Column>
         </DataTable>
       </UiParentCard>
     </v-col>

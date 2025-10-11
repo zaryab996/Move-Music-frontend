@@ -4,17 +4,17 @@ import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue';
 import UiParentCard from '@/components/shared/UiParentCard.vue';
 import { Icon } from '@iconify/vue';
 import api from '@/utils/axios';
+import { router } from '@/router';
 
-
-const page = { title: 'Statements' };
-const breadcrumbs = [{ title: 'Statements', disabled: true, href: '#' }];
+const page = { title: 'Add Invoice' };
+const breadcrumbs = [{ title: 'Add Invoice', disabled: true, href: '#' }];
 const statements = ref<any[]>([]);
 const loading = ref(false);
 const total = ref(0);
+const generating = ref(false);
 const rows = ref(10);
 const currentPage = ref(1);
 const search = ref('');
-
 const openLink = (url: string) => {
   window.open(url, '_blank');
 };
@@ -43,7 +43,7 @@ function getMonthName(month?: number | string): string {
 const fetchData = async () => {
   loading.value = true;
   try {
-    const res = await api.get('/statements', {
+    const res = await api.get('/invoice/statements', {
       params: {
         page: currentPage.value,
         per_page: rows.value,
@@ -66,6 +66,19 @@ const fetchData = async () => {
   }
 };
 
+const goToGenerateInvoice = async () => {
+  generating.value = true;
+  try {
+    await api.get('/invoice/generate'); // call API but ignore result
+  } catch (error) {
+ 
+  } finally {
+    // always redirect after the call (success or fail)
+    router.push('/invoices');
+    generating.value = false;
+  }
+};
+
 watch([currentPage, rows, search], fetchData, { immediate: true });
 </script>
 
@@ -73,8 +86,18 @@ watch([currentPage, rows, search], fetchData, { immediate: true });
   <BaseBreadcrumb :title="page.title" :breadcrumbs="breadcrumbs" />
   <v-row>
     <v-col cols="12">
-      <UiParentCard title="Your Statements List">
-        <input v-model="search" placeholder="Search Statements" class="p-inputtext p-component mb-4" />
+      <UiParentCard>
+        <template #title>
+          <div class="flex justify-space-between items-center w-full">
+            <h3 class="text-lg font-semibold flex items-center">Statements Available For Invoicing</h3>
+            <v-btn color="success" :loading="generating" :disabled="generating" @click="goToGenerateInvoice">
+              <Icon icon="mdi:add" width="22" height="22" class="mr-1" />
+              Generate Invoice
+            </v-btn>
+          </div>
+        </template>
+
+        <input v-model="search" placeholder="Search.." class="p-inputtext p-component mb-4" />
 
         <DataTable
           :value="statements"

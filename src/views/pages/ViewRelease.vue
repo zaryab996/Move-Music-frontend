@@ -5,13 +5,10 @@ import { Icon } from '@iconify/vue';
 import api from '@/utils/axios';
 
 const trackLoading = ref(false);
-
 const release = ref<any>(null);
 const loading = ref(true);
 const route = useRoute();
 const tab = ref('details');
-
-// track modal state
 const selectedTrack = ref<any>(null);
 const trackDialog = ref(false);
 
@@ -32,42 +29,39 @@ async function openTrack(trackId: number) {
     const res = await api.get(`/tracks/${trackId}`);
     selectedTrack.value = res.data;
   } catch (e) {
-    console.error('Error fetching track:', e);
+   
   } finally {
     trackLoading.value = false; // stop loader
   }
 }
+const formatStatus = (status: string): string => {
+  if (!status) return '';
+  return status
+    .split('_')
+    .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+};
 </script>
 <template>
   <v-container v-if="!loading && release" fluid class="pa-8">
     <v-row>
-      <!-- LEFT SIDEBAR -->
-      <!-- LEFT SIDEBAR -->
       <v-col cols="12" md="4">
         <v-card class="pa-6 rounded-2xl text-center" elevation="4">
           <v-img :src="release.artwork?.full_size || '/download.png'" class="rounded-xl mb-6" height="280" cover />
-
-          <!-- Release Name -->
           <h2 class="text-h4 font-weight-bold mb-2">{{ release.name }}</h2>
-
-          <!-- Artist(s) -->
           <p class="text-h6 text-primary font-weight-medium mb-4">
             {{ release.artists.map((a: any) => a.artist.name).join(', ') }}
           </p>
-
-          <!-- Status -->
           <v-chip
             :color="release.status === 'distributed' ? 'green' : 'orange'"
             variant="flat"
             size="large"
             class="mb-2 text-body-1 font-weight-bold"
           >
-            {{ release.status }}
+            <span>{{ formatStatus(release.status) }}</span>
           </v-chip>
         </v-card>
       </v-col>
-
-      <!-- RIGHT MAIN -->
       <v-col cols="12" md="8">
         <v-card class="rounded-2xl" elevation="4">
           <v-tabs v-model="tab" color="primary" align-tabs="start" grow>
@@ -76,12 +70,9 @@ async function openTrack(trackId: number) {
             <v-tab value="qc">QC / Alerts</v-tab>
             <v-tab value="notes">Notes</v-tab>
           </v-tabs>
-
           <v-divider />
-
           <v-card-text class="pa-6">
             <v-window v-model="tab">
-              <!-- DETAILS -->
               <v-window-item value="details">
                 <v-row>
                   <v-col cols="6" class="d-flex flex-column gap-2">
@@ -98,7 +89,6 @@ async function openTrack(trackId: number) {
                     <div><strong>Sub Genre:</strong> {{ release.subgenre }}</div>
                     <div><strong>Kind:</strong> {{ release.kind }}</div>
                   </v-col>
-
                   <v-col cols="6" class="d-flex flex-column gap-2">
                     <div><strong>Official Date:</strong> {{ release.official_date }}</div>
                     <div><strong>Original Date:</strong> {{ release.original_date }}</div>
@@ -110,31 +100,23 @@ async function openTrack(trackId: number) {
                     <div><strong>Backcatalog:</strong> {{ release.backcatalog ? 'Yes' : 'No' }}</div>
                     <div><strong>All Tracks Ready:</strong> {{ release.all_tracks_ready ? 'Yes' : 'No' }}</div>
                     <div><strong>Transferred:</strong> {{ release.transferred ? 'Yes' : 'No' }}</div>
-                    <!-- <div><strong>Sub User:</strong> {{ release.sub_user || '-' }}</div> -->
                     <div><strong>Has Delivery Confirmations:</strong> {{ release.has_delivery_confirmations ? 'Yes' : 'No' }}</div>
-
                     <div><strong>YouTube Declaration:</strong> {{ release.youtube_declaration ? 'Yes' : 'No' }}</div>
-
                     <div><strong>Dolby Atmos:</strong> {{ release.dolby_atmos ? 'Yes' : 'No' }}</div>
                   </v-col>
                 </v-row>
-
                 <v-divider class="my-4" />
-
                 <div class="d-flex flex-column gap-2">
                   <div><strong>ACR Alert:</strong> {{ release.has_acr_alert ? 'Yes' : 'No' }}</div>
                   <div><strong>Release User Declaration:</strong> {{ release.release_user_declaration ? 'Yes' : 'No' }}</div>
                 </div>
               </v-window-item>
-
-              <!-- TRACKS -->
               <v-window-item value="tracks">
                 <v-table density="comfortable" class="elevation-1">
                   <thead>
                     <tr>
                       <th>Track</th>
                       <th>ISRC</th>
-
                       <th>Length</th>
                       <th>QC</th>
                       <th>Action</th>
@@ -144,7 +126,6 @@ async function openTrack(trackId: number) {
                     <tr v-for="track in release.tracks" :key="track.id" class="hover:bg-grey-lighten-4">
                       <td class="font-weight-medium">{{ track.name }}</td>
                       <td>{{ track.ISRC }}</td>
-
                       <td>{{ track.track_lenght }}</td>
                       <td>
                         <v-tooltip location="top">
@@ -174,8 +155,6 @@ async function openTrack(trackId: number) {
                   </tbody>
                 </v-table>
               </v-window-item>
-
-              <!-- QC -->
               <v-window-item value="qc">
                 <div v-if="release.acr_alert">
                   <h4 class="text-subtitle-1 mb-4">ACR Scan Results</h4>
@@ -198,14 +177,11 @@ async function openTrack(trackId: number) {
                     </tbody>
                   </v-table>
                 </div>
-
                 <v-alert v-if="release.release_user_declaration" type="success" class="mt-6" border="start" variant="tonal">
                   <strong>Admin Message:</strong>
                   <p class="mb-0">{{ release.release_user_declaration.admin_message }}</p>
                 </v-alert>
               </v-window-item>
-
-              <!-- NOTES -->
               <v-window-item value="notes">
                 <p class="text-body-2">
                   {{ release.notes || 'No notes available.' }}
@@ -217,16 +193,11 @@ async function openTrack(trackId: number) {
       </v-col>
     </v-row>
   </v-container>
-
-  <!-- LOADING -->
   <v-container v-else class="text-center pa-10">
     <v-progress-circular indeterminate color="primary" size="40" />
   </v-container>
-
-  <!-- TRACK DETAIL MODAL -->
   <v-dialog v-model="trackDialog" max-width="800px" persistent>
     <v-card class="rounded-xl elevation-8">
-      <!-- Header -->
       <div class="pa-6 pb-4">
         <div class="d-flex align-center justify-space-between mb-2">
           <div>
@@ -240,21 +211,17 @@ async function openTrack(trackId: number) {
           </v-btn>
         </div>
       </div>
-
       <v-divider />
-
       <v-card-text class="pa-0">
         <div v-if="trackLoading" class="d-flex align-center justify-center pa-10">
           <v-progress-circular indeterminate color="primary" size="40" />
         </div>
         <div v-else>
-          <!-- Track Basics -->
           <div class="pa-6 pb-4">
             <h3 class="text-h6 font-weight-bold mb-4 text-grey-darken-2 d-flex align-center">
               <Icon icon="mdi:music-note" class="mr-2" />
               Track Information
             </h3>
-
             <v-row>
               <v-col cols="12" sm="6">
                 <div class="mb-4">
@@ -279,8 +246,6 @@ async function openTrack(trackId: number) {
                 </div>
               </v-col>
             </v-row>
-
-            <!-- Content Flags -->
             <div class="mb-4">
               <div class="text-caption text-grey-darken-1 mb-2">CONTENT FLAGS</div>
               <div class="d-flex flex-wrap gap-2">
@@ -291,10 +256,7 @@ async function openTrack(trackId: number) {
               </div>
             </div>
           </div>
-
           <v-divider />
-
-          <!-- Artists Section -->
           <div class="pa-6 pb-4" v-if="selectedTrack?.artists?.length">
             <h3 class="text-h6 font-weight-bold mb-4 text-grey-darken-2 d-flex align-center">
               <Icon icon="mdi:account-music" class="mr-2" />
@@ -303,7 +265,6 @@ async function openTrack(trackId: number) {
                 {{ selectedTrack.artists.length }}
               </v-chip>
             </h3>
-
             <div class="d-flex flex-wrap gap-2">
               <v-chip v-for="artist in selectedTrack.artists" :key="artist.id" color="primary" variant="tonal" size="default" class="ma-1">
                 <Icon icon="mdi:account" class="mr-2" size="16" />
@@ -312,8 +273,6 @@ async function openTrack(trackId: number) {
               </v-chip>
             </div>
           </div>
-
-          <!-- Publishers Section -->
           <div class="pa-6 pb-4" v-if="selectedTrack?.publishers?.length">
             <v-divider class="mb-6" />
             <h3 class="text-h6 font-weight-bold mb-4 text-grey-darken-2 d-flex align-center">
@@ -323,7 +282,6 @@ async function openTrack(trackId: number) {
                 {{ selectedTrack.publishers.length }}
               </v-chip>
             </h3>
-
             <div class="space-y-3">
               <div
                 v-for="publisher in selectedTrack.publishers"
@@ -338,8 +296,6 @@ async function openTrack(trackId: number) {
               </div>
             </div>
           </div>
-
-          <!-- Contributors Section -->
           <div class="pa-6 pb-4" v-if="selectedTrack?.contributors?.length">
             <v-divider class="mb-6" />
             <h3 class="text-h6 font-weight-bold mb-4 text-grey-darken-2 d-flex align-center">
@@ -349,7 +305,6 @@ async function openTrack(trackId: number) {
                 {{ selectedTrack.contributors.length }}
               </v-chip>
             </h3>
-
             <div class="space-y-3">
               <div
                 v-for="contributor in selectedTrack.contributors"
@@ -364,15 +319,12 @@ async function openTrack(trackId: number) {
               </div>
             </div>
           </div>
-
-          <!-- Copyright Section -->
           <div class="pa-6">
             <v-divider class="mb-6" />
             <h3 class="text-h6 font-weight-bold mb-4 text-grey-darken-2 d-flex align-center">
               <Icon icon="mdi:copyright" class="mr-2" />
               Rights & Copyright
             </h3>
-
             <v-card variant="outlined" class="pa-4 rounded-lg">
               <div class="d-flex align-center">
                 <Icon icon="mdi:shield-account" class="mr-3 text-primary" size="24" />
@@ -384,26 +336,9 @@ async function openTrack(trackId: number) {
                 </div>
               </div>
             </v-card>
-
-            <!-- Preview Button (when uncommented) -->
-            <!-- <v-btn
-          v-if="selectedTrack?.resource"
-          color="primary"
-          variant="flat"
-          size="large"
-          class="mt-6 w-100"
-          :href="selectedTrack.resource"
-          target="_blank"
-          rounded="lg"
-        >
-          <Icon icon="mdi:play-circle" class="mr-2" />
-          Play Preview
-        </v-btn> -->
           </div>
         </div>
       </v-card-text>
-
-      <!-- Footer Actions -->
       <v-card-actions class="pa-6 pt-0">
         <v-spacer />
         <v-btn variant="outlined" color="grey" @click="trackDialog = false" rounded="lg"> Close </v-btn>

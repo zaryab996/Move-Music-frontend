@@ -3,13 +3,17 @@ const MainRoutes = {
   meta: {
     requiresAuth: true
   },
-  redirect: '/main/dashboard/default',
+  redirect: '/releases', // 👈 Redirect root `/main` to `/releases`
   component: () => import('@/layouts/full/FullLayout.vue'),
   children: [
     {
+      path: '/', // 👈 when someone visits `/`
+      redirect: '/releases' // 👈 redirect to releases
+    },
+    {
       name: 'LandingPage',
-      path: '/',
-      component: () => import('@/views/dashboards/default/DefaultDashboard.vue')
+      path: '/main',
+      redirect: '/releases' // 👈 optional, ensures main route redirects too
     },
     {
       name: 'Default',
@@ -65,8 +69,28 @@ const MainRoutes = {
     },
     {
       name: 'ReleaseDeliveredList',
-        path: '/delivered/release/:name',
+      path: '/delivered/release/:name',
       component: () => import('@/views/pages/DeliveredList.vue')
+    },
+    {
+      name: 'MyProfile',
+      path: '/Profile',
+      component: () => import('@/views/pages/Profile.vue')
+    },
+    {
+      name: 'Invoices',
+      path: '/invoices',
+      component: () => import('@/views/pages/Invoices.vue')
+    },
+    {
+      name: 'AddInvoices',
+      path: '/invoice/statements',
+      component: () => import('@/views/pages/InvoiceStatements.vue')
+    },
+    {
+      name: 'Trends',
+      path: '/trends',
+      component: () => import('@/views/pages/Trends.vue')
     }
   ]
 };

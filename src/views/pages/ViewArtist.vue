@@ -8,10 +8,8 @@ import { router } from '@/router';
 
 const page = { title: 'View Artist' };
 const breadcrumbs = [{ title: 'View Artist', disabled: true, href: '#' }];
-
 const route = useRoute();
 const artistId = route.params.id;
-
 const loading = ref(true);
 const artist = ref<any>(null);
 const similarArtists = ref<any[]>([]);
@@ -35,12 +33,11 @@ async function fetchArtistData() {
   try {
     const res = await api.get(`/view-artist/${artistId}`);
     const data = res.data;
-
     artist.value = data.artist || data;
     similarArtists.value = data.similar || [];
     tracks.value = data.tracks || [];
   } catch (err) {
-    console.error(err);
+   
   } finally {
     loading.value = false;
   }
