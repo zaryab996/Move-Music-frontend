@@ -23,8 +23,9 @@ const sidebarMenu = shallowRef(sidebarItems);
     app
     class="leftSidebar"
     :rail="customizer.mini_sidebar"
-    expand-on-hover
+    
   >
+  <!-- expand-on-hover -->
     <!---Logo part -->
 
     <div class="pa-2">

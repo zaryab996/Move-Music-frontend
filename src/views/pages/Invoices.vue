@@ -21,6 +21,12 @@ const openLink = (url: string) => {
 const goToAddInvoice = () => {
   router.push('/invoice/statements');
 };
+const sortField = ref(''); // column name
+function onSort(event: any) {
+  sortField.value = event.sortField;
+
+  fetchData();
+}
 
 // Fetch data
 const fetchData = async () => {
@@ -30,7 +36,8 @@ const fetchData = async () => {
       params: {
         page: currentPage.value,
         per_page: rows.value,
-        search: search.value
+        search: search.value,
+         ordering: sortField.value || undefined
       }
     });
 
@@ -76,6 +83,8 @@ watch([currentPage, rows, search], fetchData, { immediate: true });
           :rows="rows"
           :totalRecords="total"
           :lazy="true"
+          :sortField="sortField"
+          @sort="onSort"
           :first="(currentPage - 1) * rows"
           paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown CurrentPageReport"
           :rowsPerPageOptions="[10, 20, 30, 50]"
@@ -91,26 +100,19 @@ watch([currentPage, rows, search], fetchData, { immediate: true });
             <div class="music-loader"><span></span><span></span><span></span><span></span><span></span></div>
           </template>
 
-          <Column field="issue_date" header="Issue Date" />
+          <Column field="issue_date" header="Issue Date" sortable />
 
           <Column field="invoice_number" header="Invoice Number" />
 
-          <Column header="Status">
+          <Column header="Status" field="status" sortable>
             <template #body="{ data }">
-              <span
-                class="badge"
-                :class="{
-                  'badge-primary': data.status === 'Paid',
-                  'badge-warning': data.status === 'Pending'
-                }"
-                style="pointer-events: none; cursor: default"
-              >
-                {{ data.status === 'paid' ? 'Paid' : 'Pending' }}
-              </span>
+              <v-btn :color="data.status === 'Paid' ? 'primary' : data.status === 'Pending' ? 'warning' : 'secondary'" class="status-btn">
+                {{ data.status === 'Paid' ? 'Paid' : 'Pending' }}
+              </v-btn>
             </template>
           </Column>
 
-          <Column header="Total Amount">
+          <Column header="Total Amount" field="total_amount" sortable>
             <template #body="{ data }">
               <span>
                 {{ data.currency === 0 ? `${data.total_amount}€` : data.total_amount }}
@@ -121,7 +123,7 @@ watch([currentPage, rows, search], fetchData, { immediate: true });
           <!-- Overview column -->
           <Column header="Download PDF  ">
             <template #body="{ data }">
-              <v-btn v-if="data.invoice_pdf" color="primary" @click="openLink(data.invoice_pdf)">
+              <v-btn v-if="data.invoice_pdf" color="primary" @click="openLink(data.invoice_pdf)" class="status-btn">
                 <Icon icon="mdi:download" width="18" height="18" class="mr-1" />
                 Download
               </v-btn>

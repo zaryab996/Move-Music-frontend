@@ -56,7 +56,6 @@ async function fetchTrendData() {
       allTracks.value = [{ id: 'all', name: 'All' }, ...(data.tracks || [])];
     }
   } catch (err) {
-   
   } finally {
     loading.value = false;
   }
@@ -69,7 +68,7 @@ onMounted(fetchTrendData);
 const genderChartOptions = computed(() => ({
   chart: { type: 'pie', height: 380, toolbar: { show: false } },
   labels: genderGraph.value?.labels || [],
-  colors: ['#000a60', '#3f57bc', '#03c9d7', 'gray'],
+  colors: ['#1E88E5', '#E91E63', '#9C27B0', '#BDBDBD'],
   legend: { position: 'bottom' },
   dataLabels: { enabled: true },
   tooltip: { y: { formatter: (val: number) => val.toLocaleString() } }
@@ -79,7 +78,13 @@ const genderChartSeries = computed(() => genderGraph.value?.data || []);
 const ageChartOptions = computed(() => ({
   chart: { type: 'bar', height: 350, stacked: true, toolbar: { show: false } },
   xaxis: { categories: ageGraph.value?.labels || [] },
-  legend: { position: 'bottom' },
+  legend: {
+    position: 'bottom',
+    markers: {
+      shape: 'circle'
+    }
+  },
+
   colors: ['#1E88E5', '#E91E63', '#9C27B0', '#BDBDBD'],
   plotOptions: { bar: { horizontal: false, columnWidth: '50%' } },
   dataLabels: { enabled: false },
@@ -98,20 +103,20 @@ const ageChartSeries = computed(() => {
 
 const multiSalesColors: Record<string, string> = {
   youtube: '#FF0000',
-  youtube_premium: '#CC0000',
-  spotify: '#1DB954',
+  youtube_premium: '#000000',
+  spotify: '#2DCE89',
   shopify: '#96BF48',
-  soundcloud: '#FF7700',
-  apple_music: '#FA57C1',
-  amazon_music: '#FF9900',
+  soundcloud: '#FF8800',
+  apple_music: '#f94c57',
+  amazon_music: '#4512ff',
   facebook: '#4267B2',
-  instagram: '#E1306C',
-  tiktok: '#010101',
-  beatport: '#A4C639',
-  deezer: '#009FE3',
-  itunes: '#B22222',
-  pandora: '#0033CC',
-  traxsource: '#0077B6'
+  instagram: '#8A3AB9',
+  tiktok: '#25F4EE',
+  beatport: '#01FF95',
+  deezer: '#EF5466',
+  itunes: '#000000',
+  pandora: '#00A0EE',
+  traxsource: '#40A0FF'
 };
 
 const multiSalesChartOptions = computed(() => ({

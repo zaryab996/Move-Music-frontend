@@ -4,14 +4,10 @@ import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue';
 import UiParentCard from '@/components/shared/UiParentCard.vue';
 import { Icon } from '@iconify/vue';
 import api from '@/utils/axios';
-import Tag from 'primevue/tag';
-
 import { useRoute, useRouter } from 'vue-router';
 
 const route = useRoute();
 const router = useRouter();
-
-
 const page = { title: 'Delivered List' };
 const breadcrumbs = [{ title: 'Dilevered list', disabled: true, href: '#' }];
 const delivered = ref<any[]>([]);
@@ -20,6 +16,12 @@ const total = ref(0);
 const rows = ref(10);
 const currentPage = ref(1);
 const search = ref('');
+const sortField = ref(''); // column name
+function onSort(event: any) {
+  sortField.value = event.sortField;
+
+  fetchData();
+}
 
 // fetch paginated data
 const fetchData = async () => {
@@ -28,7 +30,8 @@ const fetchData = async () => {
     const params: any = {
       page: currentPage.value,
       per_page: rows.value,
-      search: search.value
+      search: search.value,
+      ordering: sortField.value || undefined
     };
 
     // ✅ if we have /delivered/release/:name → add release param
@@ -57,27 +60,31 @@ const fetchData = async () => {
 function getActionBadgeClass(action: string): string {
   switch (action) {
     case 'INSERT':
-      return 'badge-primary';
+      return 'primary';
     case 'TAKEDOWN':
-      return 'badge-danger';
+      return 'error';
     case 'FULL_UPDATE':
-      return 'badge-info';
+      return 'info';
     case 'METADATA_UPDATE':
-      return 'badge-warning';
+      return 'warning';
     default:
-      return 'badge-secondary';
+      return 'secondary';
   }
 }
 
 function getStatusBadgeClass(status: string): string {
   switch (status) {
     case 'DELIVERED':
-      return 'badge-primary';
+      return 'primary';
     case 'PARTIALLY DELIVERED':
-      return 'badge-warning';
+      return 'warning';
     default:
-      return 'badge-secondary';
+      return 'secondary';
   }
+}
+
+function formatActionLabel(action: string): string {
+  return action ? action.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()) : '';
 }
 
 watch([currentPage, rows, search], fetchData, { immediate: true });
@@ -96,6 +103,8 @@ watch([currentPage, rows, search], fetchData, { immediate: true });
           :rows="rows"
           :totalRecords="total"
           :lazy="true"
+          :sortField="sortField"
+          @sort="onSort"
           :first="(currentPage - 1) * rows"
           paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown CurrentPageReport"
           :rowsPerPageOptions="[10, 20, 30, 50]"
@@ -113,28 +122,28 @@ watch([currentPage, rows, search], fetchData, { immediate: true });
           </template>
 
           <!-- Name with artwork -->
-          <Column field="release_name" header="Release" />
+          <Column field="release_name" header="Release"  />
 
           <Column field="upc" header="UPC Number" />
 
           <!-- Action column -->
-          <Column field="action" header="Action">
+          <Column field="action" header="Action" >
             <template #body="slotProps">
-              <span class="badge" :class="getActionBadgeClass(slotProps.data.action)" style="pointer-events: none; cursor: default">
-                {{ slotProps.data.action }}
-              </span>
+              <v-btn :color="getActionBadgeClass(slotProps.data.action)" class="status-btn">
+                {{ formatActionLabel(slotProps.data.action) }}
+              </v-btn>
             </template>
           </Column>
 
           <!-- Status column -->
           <Column field="status" header="Status">
             <template #body="slotProps">
-              <span class="badge" :class="getStatusBadgeClass(slotProps.data.status)" style="pointer-events: none; cursor: default">
+              <v-btn :color="getStatusBadgeClass(slotProps.data.status)" class="status-btn">
                 {{ slotProps.data.status }}
-              </span>
+              </v-btn>
             </template>
           </Column>
-          <Column field="created" header="Delivery Date">
+          <Column field="created" header="Delivery Date" sortable>
             <template #body="{ data }">
               {{ new Date(data.created).toLocaleString() }}
             </template>

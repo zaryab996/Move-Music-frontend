@@ -12,6 +12,12 @@ const total = ref(0);
 const rows = ref(10);
 const currentPage = ref(1);
 const search = ref('');
+const sortField = ref(''); // column name
+function onSort(event: any) {
+  sortField.value = event.sortField;
+
+  fetchData();
+}
 
 // fetch paginated data
 const fetchData = async () => {
@@ -21,7 +27,8 @@ const fetchData = async () => {
       params: {
         page: currentPage.value,
         per_page: rows.value,
-        search: search.value
+        search: search.value,
+        ordering: sortField.value || undefined
       }
     });
 
@@ -60,6 +67,8 @@ watch([currentPage, rows, search], fetchData, { immediate: true });
           :rows="rows"
           :totalRecords="total"
           :lazy="true"
+          :sortField="sortField"
+          @sort="onSort"
           :first="(currentPage - 1) * rows"
           paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown CurrentPageReport"
           :rowsPerPageOptions="[10, 20, 30, 50]"
@@ -77,7 +86,7 @@ watch([currentPage, rows, search], fetchData, { immediate: true });
           </template>
 
           <!-- Name with artwork -->
-          <Column field="name" header="Name">
+          <Column field="name" header="Name" sortable>
             <template #body="{ data }">
               <div style="display: flex; align-items: center; gap: 10px">
                 <img
@@ -94,48 +103,36 @@ watch([currentPage, rows, search], fetchData, { immediate: true });
             </template>
           </Column>
 
-          <Column field="primary_genre" header="Genre">
+          <Column field="primary_genre" header="Genre" sortable>
             <template #body="{ data }">
               <p>{{ data.primary_genre }}</p>
             </template>
           </Column>
 
-          <Column field="company" header="Company" />
-          <Column field="year" header="Year" />
+          <Column field="company" header="Company" sortable />
+          <Column field="year" header="Year" sortable />
           <Column field="catalog_num" header="Catalog No." />
-          <Column header="Contract">
+          <Column header="Contract" field="contract_received" sortable>
             <template #body="{ data }">
-              <span
-                class="badge"
-                :class="data.contract_received ? 'badge-success' : 'badge-danger'"
-                style="pointer-events: none; cursor: default"
-              >
+              <v-btn :color="data.contract_received ? 'success' : 'error'" class="status-btn">
                 {{ data.contract_received ? 'Approved' : 'Waiting Approval' }}
-              </span>
+              </v-btn>
             </template>
           </Column>
 
-          <Column header="Info">
+          <Column header="Info" field="information_accepted" sortable>
             <template #body="{ data }">
-              <span
-                class="badge"
-                :class="data.information_accepted ? 'badge-success' : 'badge-danger'"
-                style="pointer-events: none; cursor: default"
-              >
+              <v-btn :color="data.information_accepted ? 'success' : 'error'" class="status-btn">
                 {{ data.information_accepted ? 'Approved' : 'Waiting Approval' }}
-              </span>
+              </v-btn>
             </template>
           </Column>
 
-          <Column header="Status">
+          <Column header="Status" field="label_approved" sortable>
             <template #body="{ data }">
-              <span
-                class="badge"
-                :class="data.label_approved ? 'badge-success' : 'badge-danger'"
-                style="pointer-events: none; cursor: default"
-              >
+              <v-btn :color="data.label_approved ? 'success' : 'error'" class="status-btn">
                 {{ data.label_approved ? 'Approved' : 'Waiting Approval' }}
-              </span>
+              </v-btn>
             </template>
           </Column>
         </DataTable>

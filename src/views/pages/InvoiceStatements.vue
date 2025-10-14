@@ -151,9 +151,9 @@ watch([currentPage, rows, search], fetchData, { immediate: true });
             </template>
           </Column>
 
-          <Column header="Status">
+           <Column header="Status">
             <template #body="{ data }">
-              <v-btn v-if="data.new_details" color="success">
+              <v-btn v-if="data.new_details" color="success" class="status-btn">
                 {{ data.status === 0 ? 'Open' : 'Closed' }}
               </v-btn>
             </template>
@@ -162,7 +162,7 @@ watch([currentPage, rows, search], fetchData, { immediate: true });
           <!-- Details column -->
           <Column header="Details">
             <template #body="{ data }">
-              <v-btn v-if="data.new_details" color="primary" @click="openLink(data.new_details)">
+              <v-btn v-if="data.new_details" color="primary" @click="openLink(data.new_details)" class="status-btn">
                 <Icon icon="mdi:download" width="18" height="18" class="mr-1" />
                 Download
               </v-btn>
@@ -173,7 +173,7 @@ watch([currentPage, rows, search], fetchData, { immediate: true });
           <!-- Overview column -->
           <Column header="Overview">
             <template #body="{ data }">
-              <v-btn v-if="data.new_overview" color="primary" @click="openLink(data.new_overview)">
+              <v-btn v-if="data.new_overview" color="primary" @click="openLink(data.new_overview)" class="status-btn">
                 <Icon icon="mdi:download" width="18" height="18" class="mr-1" />
                 Download
               </v-btn>

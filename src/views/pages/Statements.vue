@@ -5,7 +5,6 @@ import UiParentCard from '@/components/shared/UiParentCard.vue';
 import { Icon } from '@iconify/vue';
 import api from '@/utils/axios';
 
-
 const page = { title: 'Statements' };
 const breadcrumbs = [{ title: 'Statements', disabled: true, href: '#' }];
 const statements = ref<any[]>([]);
@@ -14,6 +13,12 @@ const total = ref(0);
 const rows = ref(10);
 const currentPage = ref(1);
 const search = ref('');
+const sortField = ref(''); // column name
+function onSort(event: any) {
+  sortField.value = event.sortField;
+
+  fetchData();
+}
 
 const openLink = (url: string) => {
   window.open(url, '_blank');
@@ -47,7 +52,8 @@ const fetchData = async () => {
       params: {
         page: currentPage.value,
         per_page: rows.value,
-        search: search.value
+        search: search.value,
+        ordering: sortField.value || undefined
       }
     });
 
@@ -83,6 +89,8 @@ watch([currentPage, rows, search], fetchData, { immediate: true });
           :rows="rows"
           :totalRecords="total"
           :lazy="true"
+          :sortField="sortField"
+          @sort="onSort"
           :first="(currentPage - 1) * rows"
           paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown CurrentPageReport"
           :rowsPerPageOptions="[10, 20, 30, 50]"
@@ -98,29 +106,29 @@ watch([currentPage, rows, search], fetchData, { immediate: true });
             <div class="music-loader"><span></span><span></span><span></span><span></span><span></span></div>
           </template>
 
-          <Column header="Type">
+          <Column header="Type" field="type" sortable>
             <template #body="{ data }">
               {{ data.kind === 1 ? 'Regular' : 'Unknown' }}
             </template>
           </Column>
-          <Column field="year" header="Year" />
-          <Column header="Month">
+          <Column field="year" header="Year" sortable />
+          <Column header="Month" field="month" sortable>
             <template #body="{ data }">
               {{ getMonthName(data.month) }}
             </template>
           </Column>
-          <Column field="issue_year" header="Is.Year" />
+          <Column field="issue_year" header="Is.Year" sortable />
           <!-- Month Column -->
 
           <!-- Issue Month Column -->
-          <Column header="Is. Month">
+          <Column header="Is. Month" field="issue_month" sortable>
             <template #body="{ data }">
               {{ getMonthName(data.issue_month) }}
             </template>
           </Column>
 
           <Column field="short_description" header="Description" />
-          <Column header="Amount">
+          <Column header="Amount" field="price" sortable>
             <template #body="{ data }">
               <span>
                 {{ data.currency === 0 ? `${data.price}€` : data.price }}
@@ -128,9 +136,9 @@ watch([currentPage, rows, search], fetchData, { immediate: true });
             </template>
           </Column>
 
-          <Column header="Status">
+          <Column header="Status" field="status" sortable>
             <template #body="{ data }">
-              <v-btn v-if="data.new_details" color="success">
+              <v-btn v-if="data.new_details" color="success" class="status-btn">
                 {{ data.status === 0 ? 'Open' : 'Closed' }}
               </v-btn>
             </template>
@@ -139,7 +147,7 @@ watch([currentPage, rows, search], fetchData, { immediate: true });
           <!-- Details column -->
           <Column header="Details">
             <template #body="{ data }">
-              <v-btn v-if="data.new_details" color="primary" @click="openLink(data.new_details)">
+              <v-btn v-if="data.new_details" color="primary" @click="openLink(data.new_details)" class="status-btn">
                 <Icon icon="mdi:download" width="18" height="18" class="mr-1" />
                 Download
               </v-btn>
@@ -150,7 +158,7 @@ watch([currentPage, rows, search], fetchData, { immediate: true });
           <!-- Overview column -->
           <Column header="Overview">
             <template #body="{ data }">
-              <v-btn v-if="data.new_overview" color="primary" @click="openLink(data.new_overview)">
+              <v-btn v-if="data.new_overview" color="primary" @click="openLink(data.new_overview)" class="status-btn">
                 <Icon icon="mdi:download" width="18" height="18" class="mr-1" />
                 Download
               </v-btn>

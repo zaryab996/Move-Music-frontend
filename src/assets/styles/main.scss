@@ -93,6 +93,13 @@
   padding: 6px 10px;
   border-radius: 6px;
 }
+.success-tooltip {
+  background-color: #80dda0 !important;
+  color: #188038 !important;
+  font-size: 13px;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
 .space-y-3 > * + * {
   margin-top: 0.75rem;
 }
@@ -133,6 +140,10 @@
   font-size: 1.5rem;
   font-weight: 600;
 }
+.avatar-text-top {
+  font-size: 10px;
+  font-weight: 600;
+}
 
 .hoverable {
   transition: background-color 0.25s ease;
@@ -156,6 +167,16 @@
   font-size: 15px !important;
   font-weight: 600 !important;
 }
+.success-tooltip {
+  max-width: 400px !important;
+  white-space: normal !important;
+  text-align: left;
+  line-height: 1.4;
+  padding: 15px !important;
+  border-radius: 15px !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+}
 .store-tooltip {
   position: absolute;
   top: 35px;
@@ -165,9 +186,10 @@
   border-radius: 8px;
   padding: 8px 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-  z-index: 1000;
+  z-index: 9999; /* increase from 1000 */
   min-width: 250px;
 }
+
 
 .store-item {
   display: flex;
@@ -226,4 +248,16 @@ path:hover {
 
 #map-legend {
   margin-top: 170px;
+}
+.status-btn {
+  width: 160px !important; /* Adjust this value as needed */
+  justify-content: center !important;
+  text-transform: none !important; /* Prevent uppercase text */
+  border-radius: 8px !important;
+}
+.v-btn{
+  border-radius: 8px;
+}
+path:hover {
+  stroke: lightgray !important;
 }

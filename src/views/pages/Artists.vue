@@ -8,15 +8,18 @@ import { router } from '@/router';
 
 const page = { title: 'Artists' };
 const breadcrumbs = [{ title: 'Artists', disabled: true, href: '#' }];
-
 const artists = ref<any[]>([]);
 const loading = ref(false);
 const total = ref(0);
-
 const rows = ref(10); // rows per page
 const currentPage = ref(1); // current page
 const search = ref('');
-
+const sortField = ref(''); // column name
+function onSort(event: any) {
+  sortField.value = event.sortField;
+ 
+  fetchData();
+}
 // fetch paginated data
 const fetchData = async () => {
   loading.value = true;
@@ -25,7 +28,8 @@ const fetchData = async () => {
       params: {
         page: currentPage.value,
         per_page: rows.value,
-        search: search.value
+        search: search.value,
+        ordering: sortField.value || undefined
       }
     });
 
@@ -40,6 +44,7 @@ const fetchData = async () => {
       artists.value = Array.isArray(res.data) ? res.data : [];
       total.value = res.data?.length || 0;
     }
+   
   } finally {
     loading.value = false;
   }
@@ -74,6 +79,8 @@ const getDeezerLink = (id?: string): string | undefined => (id ? `https://www.de
           :rows="rows"
           :totalRecords="total"
           :lazy="true"
+          :sortField="sortField"
+          @sort="onSort"
           :first="(currentPage - 1) * rows"
           :rowsPerPageOptions="[10, 20, 30, 50]"
           currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
@@ -89,7 +96,7 @@ const getDeezerLink = (id?: string): string | undefined => (id ? `https://www.de
             <div class="music-loader"><span></span><span></span><span></span><span></span><span></span></div>
           </template>
           <!-- <Column field="id" header="ID"  /> -->
-          <Column field="name" header="Artist Name">
+          <Column field="name" header="Artist Name" sortable>
             <template #body="{ data }">
               <div style="display: flex; align-items: center; gap: 10px">
                 <img
@@ -106,12 +113,6 @@ const getDeezerLink = (id?: string): string | undefined => (id ? `https://www.de
               </div>
             </template>
           </Column>
-          <!-- <Column field="owner" header="Owner">
-            <template #body="{ data }">
-              <p>{{ data.owner }}</p>
-            </template>
-          </Column> -->
-
           <Column header="Spotify">
             <template #body="{ data }">
               <a v-if="getSpotifyLink(data.spotify_identifier)" :href="getSpotifyLink(data.spotify_identifier)" target="_blank">
@@ -119,7 +120,6 @@ const getDeezerLink = (id?: string): string | undefined => (id ? `https://www.de
               </a>
             </template>
           </Column>
-
           <Column header="Apple Music">
             <template #body="{ data }">
               <a v-if="getAppleLink(data.apple_identifier)" :href="getAppleLink(data.apple_identifier)" target="_blank">
@@ -127,7 +127,6 @@ const getDeezerLink = (id?: string): string | undefined => (id ? `https://www.de
               </a>
             </template>
           </Column>
-
           <Column header="Amazon Music">
             <template #body="{ data }">
               <a v-if="getAmazonLink(data.amazon_music_identifier)" :href="getAmazonLink(data.amazon_music_identifier)" target="_blank">

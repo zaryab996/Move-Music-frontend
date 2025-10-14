@@ -31,16 +31,16 @@ const fetchData = async () => {
 };
 
 function getStatusBadge(status: any): string {
-  if (status === true) return 'badge-primary';
-  if (status === false) return 'badge-danger';
+  if (status === true) return 'primary';
+  if (status === false) return 'error';
 
   switch (status) {
     case 'DELIVERED':
-      return 'badge-primary';
+      return 'primary';
     case 'PARTIALLY DELIVERED':
-      return 'badge-warning';
+      return 'warning';
     default:
-      return 'badge-secondary';
+      return 'secondary';
   }
 }
 
@@ -67,9 +67,9 @@ onMounted(fetchData);
           <Column field="store" header="Store" />
           <Column field="status" header="Status">
             <template #body="slotProps">
-              <span class="badge" :class="getStatusBadge(slotProps.data.status)" style="pointer-events: none; cursor: default">
+              <v-btn :color="getStatusBadge(slotProps.data.status)" class="status-btn">
                 {{ getStatusText(slotProps.data.status) }}
-              </span>
+              </v-btn>
             </template>
           </Column>
         </DataTable>

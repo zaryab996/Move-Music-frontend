@@ -29,7 +29,6 @@ async function openTrack(trackId: number) {
     const res = await api.get(`/tracks/${trackId}`);
     selectedTrack.value = res.data;
   } catch (e) {
-   
   } finally {
     trackLoading.value = false; // stop loader
   }
@@ -40,6 +39,18 @@ const formatStatus = (status: string): string => {
     .split('_')
     .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
+};
+const statusMap: Record<string, { label: string; severity: string }> = {
+  offline: { label: 'Offline', severity: 'error' },
+  takedown_request: { label: 'Takedown Requested', severity: 'error' },
+  taken_down: { label: 'Taken Down', severity: 'error' },
+  're_delivery-editing': { label: 'Re-Delivery Editing', severity: 'warning' },
+  're_delivery-delivery': { label: 'Re-Delivery', severity: 'warning' },
+  ready: { label: 'Ready', severity: 'secondary' },
+  approval: { label: 'Waiting Approval', severity: 'info' },
+  locked: { label: 'Locked', severity: 'secondary' },
+  delivering: { label: 'Delivering', severity: 'primary' },
+  distributed: { label: 'Distributed', severity: 'primary' }
 };
 </script>
 <template>
@@ -52,14 +63,9 @@ const formatStatus = (status: string): string => {
           <p class="text-h6 text-primary font-weight-medium mb-4">
             {{ release.artists.map((a: any) => a.artist.name).join(', ') }}
           </p>
-          <v-chip
-            :color="release.status === 'distributed' ? 'green' : 'orange'"
-            variant="flat"
-            size="large"
-            class="mb-2 text-body-1 font-weight-bold"
-          >
-            <span>{{ formatStatus(release.status) }}</span>
-          </v-chip>
+          <v-btn :color="statusMap[release.status]?.severity || 'secondary'" class="status-btn">
+            {{ statusMap[release.status]?.label || release.status }}
+          </v-btn>
         </v-card>
       </v-col>
       <v-col cols="12" md="8">
@@ -177,9 +183,21 @@ const formatStatus = (status: string): string => {
                     </tbody>
                   </v-table>
                 </div>
-                <v-alert v-if="release.release_user_declaration" type="success" class="mt-6" border="start" variant="tonal">
+                <v-alert
+                  v-if="release.release_user_declaration"
+                  :type="
+                    release.release_user_declaration.status?.toLowerCase() === 'approved'
+                      ? 'success'
+                      : release.release_user_declaration.status?.toLowerCase() === 'rejected'
+                        ? 'error'
+                        : 'info'
+                  "
+                  class="mt-6"
+                  border="start"
+                  variant="tonal"
+                >
                   <strong>Admin Message:</strong>
-                  <p class="mb-0">{{ release.release_user_declaration.admin_message }}</p>
+                  <p class="mb-0">{{ release.release_user_declaration.admin_message || 'No message available' }}</p>
                 </v-alert>
               </v-window-item>
               <v-window-item value="notes">
