@@ -84,7 +84,12 @@ function getStatusBadgeClass(status: string): string {
 }
 
 function formatActionLabel(action: string): string {
-  return action ? action.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()) : '';
+  if (!action) return '';
+
+  return action
+    .toLowerCase() // make all lowercase first
+    .replace(/_/g, ' ') // replace underscores with spaces
+    .replace(/\b\w/g, (c) => c.toUpperCase()); // capitalize each word
 }
 
 watch([currentPage, rows, search], fetchData, { immediate: true });
@@ -122,12 +127,12 @@ watch([currentPage, rows, search], fetchData, { immediate: true });
           </template>
 
           <!-- Name with artwork -->
-          <Column field="release_name" header="Release"  />
+          <Column field="release_name" header="Release" />
 
           <Column field="upc" header="UPC Number" />
 
           <!-- Action column -->
-          <Column field="action" header="Action" >
+          <Column field="action" header="Action">
             <template #body="slotProps">
               <v-btn :color="getActionBadgeClass(slotProps.data.action)" class="status-btn">
                 {{ formatActionLabel(slotProps.data.action) }}
@@ -139,7 +144,7 @@ watch([currentPage, rows, search], fetchData, { immediate: true });
           <Column field="status" header="Status">
             <template #body="slotProps">
               <v-btn :color="getStatusBadgeClass(slotProps.data.status)" class="status-btn">
-                {{ slotProps.data.status }}
+                {{ formatActionLabel(slotProps.data.status) }}
               </v-btn>
             </template>
           </Column>

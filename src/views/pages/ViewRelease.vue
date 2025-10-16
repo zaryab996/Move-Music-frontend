@@ -134,7 +134,7 @@ const statusMap: Record<string, { label: string; severity: string }> = {
                       <td>{{ track.ISRC }}</td>
                       <td>{{ track.track_lenght }}</td>
                       <td>
-                        <v-tooltip location="top">
+                        <v-tooltip location="top" class="tool" :content-class="track.qc_passed ? 'success-tooltip' : 'danger-tooltip'">
                           <template #activator="{ props }">
                             <Icon
                               v-bind="props"
@@ -143,9 +143,15 @@ const statusMap: Record<string, { label: string; severity: string }> = {
                               width="20"
                             />
                           </template>
-                          <span v-if="Object.keys(track.qc_feedback).length">
-                            {{ track.qc_feedback }}
-                          </span>
+                          <div v-if="track.qc_feedback && Object.keys(track.qc_feedback).length">
+                            <div v-for="(messages, key) in track.qc_feedback" :key="key">
+                              <strong class="capitalize">{{ key }}:</strong>
+                              <ul style="padding: 12px">
+                                <li v-for="(msg, i) in messages" :key="i">{{ msg }}</li>
+                              </ul>
+                            </div>
+                          </div>
+
                           <span v-else>No QC Feedback</span>
                         </v-tooltip>
                       </td>

@@ -252,7 +252,7 @@ function getTooltipMessage(data: any): string {
           </Column>
           <Column field="catalogue_number" header="Cat. No." />
           <!-- <Column field="ean" header="UPC. No." /> -->
-          <Column field="official_date" header="Release Date">
+          <Column field="official_date" header="Release Date" sortable>
             <template #body="{ data }">
               <p>{{ data.official_date }}</p>
             </template>
@@ -296,12 +296,30 @@ function getTooltipMessage(data: any): string {
           <Column header="QC">
             <template #body="{ data }">
               <div>
-                <Icon v-if="!data.qc_passed" icon="mdi:bell-ring-outline" color="gray" width="20" />
+                <!-- If no feedback -->
+                <Icon
+                  v-if="!data.qc_feedback || (Array.isArray(data.qc_feedback) && data.qc_feedback.length === 0)"
+                  icon="mdi:bell-ring-outline"
+                  color="gray"
+                  width="20"
+                />
+
+                <!-- If feedback exists -->
                 <v-tooltip v-else location="top" content-class="danger-tooltip">
                   <template #activator="{ props }">
                     <Icon v-bind="props" icon="mdi:bell-ring" color="#d93025" width="20" style="cursor: pointer" />
                   </template>
-                  <span>{{ data.qc_feedback || 'No feedback provided' }}</span>
+
+                  <!-- Safe optional chaining -->
+                  <span>
+                    <span>
+                      {{
+                        Array.isArray(data.qc_feedback?.results?.release_level?.name)
+                          ? data.qc_feedback.results.release_level.name.join(', ')
+                          : data.qc_feedback?.results?.release_level?.name || 'No feedback provided'
+                      }}
+                    </span>
+                  </span>
                 </v-tooltip>
               </div>
             </template>

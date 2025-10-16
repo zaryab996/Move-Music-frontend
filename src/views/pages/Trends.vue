@@ -48,20 +48,32 @@ async function fetchTrendData() {
         value: item.value
       })) || [];
 
-    // Initialize filter dropdowns once
+    // Initialize filters once
     if (stores.value.length === 0) {
       stores.value = [{ id: 'all', name: 'All' }, ...(data.stores || [])];
       labels.value = [{ id: 'all', name: 'All' }, ...(data.labels || [])];
-      releases.value = [{ id: 'all', name: 'All' }, ...(data.releases || [])];
-      allTracks.value = [{ id: 'all', name: 'All' }, ...(data.tracks || [])];
     }
+    releases.value = [{ id: 'all', name: 'All' }, ...(data.releases || [])];
+    allTracks.value = [{ id: 'all', name: 'All' }, ...(data.tracks || [])];
   } catch (err) {
+    console.error('Trend fetch error:', err);
   } finally {
     loading.value = false;
   }
 }
+
 // Auto-fetch when filters change
-watch([selectedPeriod, selectedStore, selectedLabel, selectedRelease, selectedTrack], fetchTrendData);
+// 🔹 Main watcher for all filters (except release)
+watch([selectedPeriod, selectedStore, selectedLabel, selectedTrack], fetchTrendData);
+
+// 🔹 Separate watcher for release (reset track + fetch trends)
+watch(selectedRelease, async (newRelease, oldRelease) => {
+  if (newRelease !== oldRelease) {
+    selectedTrack.value = 'all'; // reset track filter
+    await fetchTrendData(); // refresh trends + track dropdown
+  }
+});
+
 // Initial load
 onMounted(fetchTrendData);
 // --- Gender Pie Chart ---

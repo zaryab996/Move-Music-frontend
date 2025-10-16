@@ -50,6 +50,15 @@ function getStatusText(status: any): string {
   return status || 'UNKNOWN';
 }
 
+function formatActionLabel(action: string): string {
+  if (!action) return '';
+
+  return action
+    .toLowerCase() // make all lowercase first
+    .replace(/_/g, ' ') // replace underscores with spaces
+    .replace(/\b\w/g, (c) => c.toUpperCase()); // capitalize each word
+}
+
 onMounted(fetchData);
 </script>
 
@@ -64,11 +73,11 @@ onMounted(fetchData);
             <div class="music-loader"><span></span><span></span><span></span><span></span><span></span></div>
           </template>
 
-          <Column field="store" header="Store" />
+          <Column field="store_name" header="Store" />
           <Column field="status" header="Status">
             <template #body="slotProps">
               <v-btn :color="getStatusBadge(slotProps.data.status)" class="status-btn">
-                {{ getStatusText(slotProps.data.status) }}
+                {{ formatActionLabel(getStatusText(slotProps.data.status)) }}
               </v-btn>
             </template>
           </Column>
