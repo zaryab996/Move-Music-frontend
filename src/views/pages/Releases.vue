@@ -313,11 +313,7 @@ function getTooltipMessage(data: any): string {
                   <!-- Safe optional chaining -->
                   <span>
                     <span>
-                      {{
-                        Array.isArray(data.qc_feedback?.results?.release_level?.name)
-                          ? data.qc_feedback.results.release_level.name.join(', ')
-                          : data.qc_feedback?.results?.release_level?.name || 'No feedback provided'
-                      }}
+                  Release {{ data.name }} has QC issues, please view the release for detailed QC feedback, make required changes and resubmit!
                     </span>
                   </span>
                 </v-tooltip>

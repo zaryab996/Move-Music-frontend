@@ -24,14 +24,17 @@ function validate(values: any, { setErrors }: any) {
   <Form @submit="validate" class="mt-6 loginForm" v-slot="{ errors, isSubmitting }">
     <v-text-field
       v-model="username"
-      label="Username"
+      label="Email"
+      type="email"
       class="mt-4 mb-4"
       required
       density="comfortable"
       hide-details="auto"
       variant="outlined"
       color="primary"
-    ></v-text-field>
+      :rules="[(v) => !!v || 'Email is required', (v) => /.+@.+\..+/.test(v) || 'Enter a valid email address']"
+    />
+
     <v-text-field
       v-model="password"
       label="Password"
