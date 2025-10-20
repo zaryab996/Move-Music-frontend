@@ -23,16 +23,16 @@ onMounted(async () => {
 });
 
 async function openTrack(trackId: number) {
-  trackDialog.value = true; // open immediately
-  trackLoading.value = true; // show loader
+  trackDialog.value = true;
+  trackLoading.value = true;
   try {
     const res = await api.get(`/tracks/${trackId}`);
     selectedTrack.value = res.data;
-  } catch (e) {
   } finally {
-    trackLoading.value = false; // stop loader
+    trackLoading.value = false;
   }
 }
+
 const formatStatus = (status: string): string => {
   if (!status) return '';
   return status
@@ -40,6 +40,7 @@ const formatStatus = (status: string): string => {
     .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
 };
+
 const statusMap: Record<string, { label: string; severity: string }> = {
   offline: { label: 'Offline', severity: 'error' },
   takedown_request: { label: 'Takedown Requested', severity: 'error' },
@@ -55,8 +56,10 @@ const statusMap: Record<string, { label: string; severity: string }> = {
 
 const qcIssues = computed(() => {
   if (!release.value?.qc_feedback?.results) return [];
+
   const issues: string[] = [];
-  // Release level issues
+
+  // ✅ Release-level issues
   const releaseLevel = release.value.qc_feedback.results.release_level;
   if (releaseLevel) {
     Object.entries(releaseLevel).forEach(([key, msgs]) => {
@@ -65,21 +68,28 @@ const qcIssues = computed(() => {
       }
     });
   }
-  // Track level issues
+
+  // ✅ Track-level issues (show track names)
   const trackLevel = release.value.qc_feedback.results.track_level;
+  const trackList = release.value.tracks || [];
+
   if (trackLevel) {
     Object.entries(trackLevel).forEach(([trackId, errors]) => {
       if (errors && typeof errors === 'object') {
+        // Find the track name
+        const track = trackList.find((t: any) => String(t.id) === String(trackId));
+        const trackName = track ? track.name : `ID ${trackId}`;
         Object.entries(errors).forEach(([errorType, msgs]) => {
           if (Array.isArray(msgs)) {
             issues.push(
-              ...msgs.map((msg: string) => `Track ${trackId} - ${errorType.charAt(0).toUpperCase() + errorType.slice(1)}: ${msg}`)
+              ...msgs.map((msg: string) => `Track "${trackName}" - ${errorType.charAt(0).toUpperCase() + errorType.slice(1)}: ${msg}`)
             );
           }
         });
       }
     });
   }
+
   return issues;
 });
 </script>
@@ -146,6 +156,33 @@ const qcIssues = computed(() => {
                 <div class="d-flex flex-column gap-2">
                   <div><strong>ACR Alert:</strong> {{ release.has_acr_alert ? 'Yes' : 'No' }}</div>
                   <div><strong>Release User Declaration:</strong> {{ release.release_user_declaration ? 'Yes' : 'No' }}</div>
+                  <div v-if="release.qc_feedback?.results?.release_level" class="d-flex flex-column gap-2 mt-2">
+                    <div><strong>QC Feedback:</strong></div>
+
+                    <div v-for="(messages, key) in release.qc_feedback.results.release_level" :key="key">
+                      <div
+                        v-for="(msg, index) in messages"
+                        :key="index"
+                        class="pa-2 rounded border border-error text-body-2 d-flex align-items-start"
+                        style="background-color: #fdecea; color: #b71c1c"
+                      >
+                        <Icon icon="mdi:alert-circle-outline" color="error" size="16" class="me-1 mt-1" />
+                        <span>
+                          <strong>{{ String(key).charAt(0).toUpperCase() + String(key).slice(1) }}:</strong>
+                          {{ msg }}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div
+                    v-else
+                    class="pa-2 rounded border border-success text-body-2 d-flex align-items-center mt-2"
+                    style="background-color: #edf7ed; color: #1b5e20"
+                  >
+                    <Icon icon="mdi:check-circle-outline" color="success" size="16" class="me-1" />
+                    <span><strong>QC Feedback:</strong> No QC issues found</span>
+                  </div>
                 </div>
               </v-window-item>
               <v-window-item value="tracks">
@@ -198,37 +235,31 @@ const qcIssues = computed(() => {
                   </tbody>
                 </v-table>
               </v-window-item>
-             <v-window-item value="qc">
-  <!-- No QC issues -->
-  <div v-if="qcIssues.length === 0" class="pa-4">
-  
-  
-      <div class="text-body-2">No QC issues found. All checks passed.</div>
-    
-  </div>
+              <v-window-item value="qc">
+                <!-- No QC issues -->
+                <div v-if="qcIssues.length === 0" class="pa-4">
+                  <div class="text-body-2">No QC issues found. All checks passed.</div>
+                </div>
 
-  <!-- QC issues -->
-  <div v-else class="pa-4">
-    <!-- Alert Header -->
+                <!-- QC issues -->
+                <div v-else class="pa-4">
+                  <!-- Alert Header -->
 
+                  <!-- Issue List -->
 
-
-    <!-- Issue List -->
-     
-    <div class="d-flex flex-column gap-2">
-      <div
-        v-for="(issue, index) in qcIssues"
-        :key="index"
-        class="pa-2 rounded border border-error text-body-2"
-        style="background-color: #fdecea; color: #b71c1c;"
-      >
-        <Icon icon="mdi:alert-circle-outline" color="error" size="16" class="mr-1" />
-        {{ issue }}
-      </div>
-    </div>
-  </div>
-</v-window-item>
-
+                  <div class="d-flex flex-column gap-2">
+                    <div
+                      v-for="(issue, index) in qcIssues"
+                      :key="index"
+                      class="pa-2 rounded border border-error text-body-2"
+                      style="background-color: #fdecea; color: #b71c1c"
+                    >
+                      <Icon icon="mdi:alert-circle-outline" color="error" size="16" class="mr-1" />
+                      {{ issue }}
+                    </div>
+                  </div>
+                </div>
+              </v-window-item>
 
               <v-window-item value="alerts">
                 <div v-if="release.acr_alert">
@@ -433,7 +464,3 @@ const qcIssues = computed(() => {
     </v-card>
   </v-dialog>
 </template>
-
-
-
-
