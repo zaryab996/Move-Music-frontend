@@ -56,10 +56,7 @@ watch([currentPage, rows, search], fetchData, { immediate: true });
   <v-row>
     <v-col cols="12">
       <UiParentCard title="Your Labels List">
-        <!-- Search input -->
         <input v-model="search" placeholder="Search Labels" class="p-inputtext p-component mb-4" />
-
-        <!-- PrimeVue DataTable -->
         <DataTable
           :value="labels"
           :loading="loading"
@@ -80,12 +77,9 @@ watch([currentPage, rows, search], fetchData, { immediate: true });
             }
           "
         >
-          <!-- Custom Loader -->
           <template #loading>
             <div class="music-loader"><span></span><span></span><span></span><span></span><span></span></div>
           </template>
-
-          <!-- Name with artwork -->
           <Column field="name" header="Name" sortable>
             <template #body="{ data }">
               <div style="display: flex; align-items: center; gap: 10px">

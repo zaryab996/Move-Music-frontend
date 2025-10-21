@@ -39,7 +39,6 @@ function getMonthName(month?: number | string): string {
   return monthNames[m - 1] ?? '-';
 }
 
-// Fetch data
 const fetchData = async () => {
   loading.value = true;
   try {
@@ -69,11 +68,9 @@ const fetchData = async () => {
 const goToGenerateInvoice = async () => {
   generating.value = true;
   try {
-    await api.get('/invoice/generate'); // call API but ignore result
+    await api.get('/invoice/generate'); 
   } catch (error) {
- 
   } finally {
-    // always redirect after the call (success or fail)
     router.push('/invoices');
     generating.value = false;
   }

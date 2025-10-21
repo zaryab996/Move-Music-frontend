@@ -44,7 +44,6 @@ function getMonthName(month?: number | string): string {
   return monthNames[m - 1] ?? '-';
 }
 
-// Fetch data
 const fetchData = async () => {
   loading.value = true;
   try {
@@ -118,9 +117,6 @@ watch([currentPage, rows, search], fetchData, { immediate: true });
             </template>
           </Column>
           <Column field="issue_year" header="Is.Year" sortable />
-          <!-- Month Column -->
-
-          <!-- Issue Month Column -->
           <Column header="Is. Month" field="issue_month" sortable>
             <template #body="{ data }">
               {{ getMonthName(data.issue_month) }}
@@ -144,7 +140,6 @@ watch([currentPage, rows, search], fetchData, { immediate: true });
             </template>
           </Column>
 
-          <!-- Details column -->
           <Column header="Details">
             <template #body="{ data }">
               <v-btn v-if="data.new_details" color="primary" @click="openLink(data.new_details)" class="status-btn">
@@ -155,7 +150,6 @@ watch([currentPage, rows, search], fetchData, { immediate: true });
             </template>
           </Column>
 
-          <!-- Overview column -->
           <Column header="Overview">
             <template #body="{ data }">
               <v-btn v-if="data.new_overview" color="primary" @click="openLink(data.new_overview)" class="status-btn">

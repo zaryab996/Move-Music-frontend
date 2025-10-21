@@ -1,12 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import api from '@/utils/axios';
-import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue';
 import { Icon } from '@iconify/vue';
 
 const page = { title: 'My Profile' };
 const breadcrumbs = [{ title: 'My Profile', disabled: true, href: '#' }];
-
 const loading = ref(true);
 const profile = ref<any>(null);
 
@@ -42,14 +40,10 @@ onMounted(fetchProfileData);
               <span class="avatar-text"> {{ profile.first_name?.charAt(0) }}{{ profile.last_name?.charAt(0) }} </span>
             </v-avatar>
           </div>
-
-          <!-- Name & Email -->
           <h2 class="text-h5 font-weight-bold mb-1">{{ profile.first_name }} {{ profile.last_name }}</h2>
           <p class="text-medium-emphasis mb-4">{{ profile.email }}</p>
 
           <v-divider class="my-4 w-100"></v-divider>
-
-          <!-- Info Grid -->
           <v-row dense class="w-100">
             <v-col
               v-for="(item, i) in [
@@ -75,7 +69,6 @@ onMounted(fetchProfileData);
           </v-row>
         </v-card>
 
-        <!-- Skeleton Loader -->
         <v-skeleton-loader v-else type="card-avatar, article" class="rounded-xl elevation-3" :loading="loading" />
       </v-col>
     </v-row>

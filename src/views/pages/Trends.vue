@@ -22,7 +22,6 @@ const selectedLabel = ref('all');
 const selectedRelease = ref('all');
 const selectedTrack = ref('all');
 
-// Fetch filters + trend data
 async function fetchTrendData() {
   loading.value = true;
   try {
@@ -48,7 +47,6 @@ async function fetchTrendData() {
         value: item.value
       })) || [];
 
-    // Initialize filters once
     if (stores.value.length === 0) {
       stores.value = [{ id: 'all', name: 'All' }, ...(data.stores || [])];
       labels.value = [{ id: 'all', name: 'All' }, ...(data.labels || [])];
@@ -62,21 +60,17 @@ async function fetchTrendData() {
   }
 }
 
-// Auto-fetch when filters change
-// 🔹 Main watcher for all filters (except release)
 watch([selectedPeriod, selectedStore, selectedLabel, selectedTrack], fetchTrendData);
 
-// 🔹 Separate watcher for release (reset track + fetch trends)
 watch(selectedRelease, async (newRelease, oldRelease) => {
   if (newRelease !== oldRelease) {
-    selectedTrack.value = 'all'; // reset track filter
-    await fetchTrendData(); // refresh trends + track dropdown
+    selectedTrack.value = 'all';
+    await fetchTrendData();
   }
 });
 
-// Initial load
 onMounted(fetchTrendData);
-// --- Gender Pie Chart ---
+
 const genderChartOptions = computed(() => ({
   chart: { type: 'pie', height: 380, toolbar: { show: false } },
   labels: genderGraph.value?.labels || [],
@@ -86,7 +80,7 @@ const genderChartOptions = computed(() => ({
   tooltip: { y: { formatter: (val: number) => val.toLocaleString() } }
 }));
 const genderChartSeries = computed(() => genderGraph.value?.data || []);
-// --- Age Bar Chart ---
+
 const ageChartOptions = computed(() => ({
   chart: { type: 'bar', height: 350, stacked: true, toolbar: { show: false } },
   xaxis: { categories: ageGraph.value?.labels || [] },

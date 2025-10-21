@@ -23,7 +23,6 @@ const expandedRows = ref<any[]>([]);
 
 function onSort(event: any) {
   sortField.value = event.sortField;
-
   fetchData();
 }
 
@@ -97,7 +96,6 @@ function toggleTooltip(id: number, event?: MouseEvent) {
     return;
   }
   activeTooltip.value = id;
-
   const rect = (event?.currentTarget as HTMLElement).getBoundingClientRect();
   tooltipPosition.value = {
     top: `${rect.bottom + window.scrollY + 8}px`,
@@ -199,7 +197,6 @@ function getTooltipMessage(data: any): string {
         <!-- Search input -->
         <input v-model="search" placeholder="Search Releases" class="p-inputtext p-component mb-4" />
 
-        <!-- PrimeVue DataTable -->
         <DataTable
           v-model:expandedRows="expandedRows"
           :value="releases"
@@ -313,7 +310,8 @@ function getTooltipMessage(data: any): string {
                   <!-- Safe optional chaining -->
                   <span>
                     <span>
-                  Release {{ data.name }} has QC issues, please view the release for detailed QC feedback, make required changes and resubmit!
+                      Release {{ data.name }} has QC issues, please view the release for detailed QC feedback, make required changes and
+                      resubmit!
                     </span>
                   </span>
                 </v-tooltip>
@@ -345,10 +343,8 @@ function getTooltipMessage(data: any): string {
             </template>
           </Column>
 
-          <!-- Expander Column for Accordion Expansion -->
           <Column expander header="Actions" style="width: 6rem" />
 
-          <!-- Expanded Row Content with Accordion -->
           <template #expansion="slotProps">
             <div
               class="expanded-row-wrapper"

@@ -2,7 +2,6 @@
 import { ref, onMounted } from 'vue';
 import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue';
 import UiParentCard from '@/components/shared/UiParentCard.vue';
-import { Icon } from '@iconify/vue';
 import api from '@/utils/axios';
 import { useRoute } from 'vue-router';
 
@@ -20,9 +19,6 @@ const loading = ref(false);
 const route = useRoute();
 const deliveredId = route.params.id;
 
-// ----------------------
-// Fetch API data
-// ----------------------
 const fetchData = async () => {
   loading.value = true;
   try {
@@ -38,7 +34,6 @@ const fetchData = async () => {
       rawData = Array.isArray(res.data.store_confirmations) ? res.data.store_confirmations : [];
     }
 
-    // 🔥 Expand multiple store names into separate rows
     const expandedData: StoreConfirmation[] = rawData.flatMap((item: StoreConfirmation) => {
       const storeNames = Array.isArray(item.store_name)
         ? item.store_name
@@ -61,9 +56,6 @@ const fetchData = async () => {
   }
 };
 
-// ----------------------
-// Utility functions
-// ----------------------
 function getStatusBadge(status: any): string {
   if (status === true) return 'primary';
   if (status === false) return 'error';
@@ -94,7 +86,6 @@ function formatActionLabel(action: string): string {
     .replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
-// ✅ Generate Additional Notes safely (with status check)
 function getAdditionalNote(storeName?: string | string[], status?: string | boolean): { text: string; color: string } {
   if (!storeName) {
     return { text: 'No additional information available.', color: 'secondary' };

@@ -11,7 +11,6 @@ const route = useRoute();
 const tab = ref('details');
 const selectedTrack = ref<any>(null);
 const trackDialog = ref(false);
-
 onMounted(async () => {
   const releaseId = route.params.id;
   try {
@@ -59,7 +58,6 @@ const qcIssues = computed(() => {
 
   const issues: string[] = [];
 
-  // ✅ Release-level issues
   const releaseLevel = release.value.qc_feedback.results.release_level;
   if (releaseLevel) {
     Object.entries(releaseLevel).forEach(([key, msgs]) => {
@@ -69,7 +67,6 @@ const qcIssues = computed(() => {
     });
   }
 
-  // ✅ Track-level issues (show track names)
   const trackLevel = release.value.qc_feedback.results.track_level;
   const trackList = release.value.tracks || [];
 
@@ -236,17 +233,12 @@ const qcIssues = computed(() => {
                 </v-table>
               </v-window-item>
               <v-window-item value="qc">
-                <!-- No QC issues -->
+
                 <div v-if="qcIssues.length === 0" class="pa-4">
                   <div class="text-body-2">No QC issues found. All checks passed.</div>
                 </div>
 
-                <!-- QC issues -->
                 <div v-else class="pa-4">
-                  <!-- Alert Header -->
-
-                  <!-- Issue List -->
-
                   <div class="d-flex flex-column gap-2">
                     <div
                       v-for="(issue, index) in qcIssues"

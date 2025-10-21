@@ -37,7 +37,7 @@ const fetchData = async () => {
         page: currentPage.value,
         per_page: rows.value,
         search: search.value,
-         ordering: sortField.value || undefined
+        ordering: sortField.value || undefined
       }
     });
 
@@ -101,9 +101,7 @@ watch([currentPage, rows, search], fetchData, { immediate: true });
           </template>
 
           <Column field="issue_date" header="Issue Date" sortable />
-
           <Column field="invoice_number" header="Invoice Number" />
-
           <Column header="Status" field="status" sortable>
             <template #body="{ data }">
               <v-btn :color="data.status === 'Paid' ? 'primary' : data.status === 'Pending' ? 'warning' : 'secondary'" class="status-btn">

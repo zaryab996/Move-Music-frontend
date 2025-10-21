@@ -17,7 +17,7 @@ const search = ref('');
 const sortField = ref(''); // column name
 function onSort(event: any) {
   sortField.value = event.sortField;
- 
+
   fetchData();
 }
 // fetch paginated data
@@ -44,23 +44,17 @@ const fetchData = async () => {
       artists.value = Array.isArray(res.data) ? res.data : [];
       total.value = res.data?.length || 0;
     }
-   
   } finally {
     loading.value = false;
   }
 };
 
-// trigger fetch when page, rows, or search changes
 watch([currentPage, rows, search], fetchData, { immediate: true });
 
-// helpers for links
 const getSpotifyLink = (id?: string): string | undefined =>
   id ? `https://open.spotify.com/artist/${id.replace('spotify:artist:', '')}` : undefined;
-
 const getAppleLink = (id?: string): string | undefined => (id ? `https://music.apple.com/artist/${id}` : undefined);
-
 const getAmazonLink = (id?: string): string | undefined => (id ? `https://music.amazon.com/artists/${id}` : undefined);
-
 const getDeezerLink = (id?: string): string | undefined => (id ? `https://www.deezer.com/artist/${id}` : undefined);
 </script>
 
@@ -71,7 +65,6 @@ const getDeezerLink = (id?: string): string | undefined => (id ? `https://www.de
       <UiParentCard title="Your Artists List">
         <!-- PrimeVue styled input -->
         <input v-model="search" placeholder="Search Artists" class="p-inputtext p-component mb-4" />
-
         <DataTable
           :value="artists"
           :loading="loading"

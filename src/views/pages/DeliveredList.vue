@@ -19,7 +19,6 @@ const search = ref('');
 const sortField = ref(''); // column name
 function onSort(event: any) {
   sortField.value = event.sortField;
-
   fetchData();
 }
 
@@ -34,13 +33,11 @@ const fetchData = async () => {
       ordering: sortField.value || undefined
     };
 
-    // ✅ if we have /delivered/release/:name → add release param
     if (route.params.name) {
       params.release = route.params.name;
     }
 
     const res = await api.get('/delivered', { params });
-
     if (res.data.data) {
       delivered.value = Array.isArray(res.data.data) ? res.data.data : [];
       total.value = res.data.meta?.total || 0;
@@ -56,7 +53,6 @@ const fetchData = async () => {
   }
 };
 
-// script setup
 function getActionBadgeClass(action: string): string {
   switch (action) {
     case 'INSERT':
@@ -85,11 +81,10 @@ function getStatusBadgeClass(status: string): string {
 
 function formatActionLabel(action: string): string {
   if (!action) return '';
-
   return action
-    .toLowerCase() // make all lowercase first
-    .replace(/_/g, ' ') // replace underscores with spaces
-    .replace(/\b\w/g, (c) => c.toUpperCase()); // capitalize each word
+    .toLowerCase()
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
 watch([currentPage, rows, search], fetchData, { immediate: true });

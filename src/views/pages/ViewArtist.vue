@@ -37,7 +37,6 @@ async function fetchArtistData() {
     similarArtists.value = data.similar || [];
     tracks.value = data.tracks || [];
   } catch (err) {
-   
   } finally {
     loading.value = false;
   }
@@ -51,18 +50,10 @@ onMounted(fetchArtistData);
     <BaseBreadcrumb :title="page.title" :breadcrumbs="breadcrumbs" />
 
     <v-row dense>
-      <!-- Artist Card -->
       <v-col cols="12" md="3">
         <v-card elevation="4" class="pa-4 text-center">
-          <!-- Big artist image -->
           <v-img :src="artist?.image_big || ''" alt="Artist" height="220" class="rounded-lg mb-4" cover />
-
-          <!-- Artist name -->
           <h2 class="text-h5 font-weight-bold mb-1">{{ artist?.name }}</h2>
-
-          <!-- Email -->
-
-          <!-- Genres -->
           <div class="d-flex flex-wrap justify-center ga-1 mb-3">
             <v-chip
               v-for="genre in formatGenres(artist?.spotify_details?.genres || [])"
@@ -78,7 +69,6 @@ onMounted(fetchArtistData);
 
           <v-divider class="my-3" />
 
-          <!-- Followers -->
           <div class="d-flex justify-space-between align-center mb-2">
             <span class="text-body-2">
               <Icon icon="mdi:account-multiple" width="18" height="18" color="#10b981" class="me-2" />
@@ -89,7 +79,6 @@ onMounted(fetchArtistData);
             </span>
           </div>
 
-          <!-- Popularity -->
           <div class="mb-2">
             <div class="d-flex justify-space-between text-body-2 mb-1">
               <span>
@@ -103,7 +92,6 @@ onMounted(fetchArtistData);
         </v-card>
       </v-col>
 
-      <!-- Similar Artists -->
       <v-col cols="12" md="9">
         <v-card elevation="4">
           <v-card-title class="font-weight-bold">Similar Artists</v-card-title>
@@ -118,7 +106,6 @@ onMounted(fetchArtistData);
             :loading="loading"
             class="elevation-1"
           >
-            <!-- Artist Name + Avatar -->
             <template #item.name="{ item }">
               <v-avatar size="32" class="me-2">
                 <v-img :src="item?.images?.[0]?.url || ''" />
@@ -126,7 +113,6 @@ onMounted(fetchArtistData);
               <span>{{ item.name }}</span>
             </template>
 
-            <!-- Genre Chips -->
             <template #item.genres="{ item }">
               <div class="d-flex flex-wrap ga-1">
                 <v-chip
@@ -141,7 +127,6 @@ onMounted(fetchArtistData);
               </div>
             </template>
 
-            <!-- Action -->
             <template #item.action="{ item }">
               <Icon
                 icon="mdi:eye-outline"
@@ -156,7 +141,6 @@ onMounted(fetchArtistData);
       </v-col>
     </v-row>
 
-    <!-- Tracks Table -->
     <v-row dense class="mt-6">
       <v-col cols="12">
         <v-card elevation="4">
@@ -174,7 +158,6 @@ onMounted(fetchArtistData);
             :loading="loading"
             class="elevation-1"
           >
-            <!-- Track Name with Album Cover -->
             <template #item.name="{ item }">
               <div class="d-flex align-center">
                 <v-avatar size="32" class="me-2">
@@ -184,7 +167,6 @@ onMounted(fetchArtistData);
               </div>
             </template>
 
-            <!-- Release (album name + release date) -->
             <template #item.album="{ item }">
               <div>
                 <div class="font-weight-medium">{{ item?.album?.name || '' }}</div>
@@ -192,12 +174,10 @@ onMounted(fetchArtistData);
               </div>
             </template>
 
-            <!-- Artists (comma separated) -->
             <template #item.artists="{ item }">
               {{ (item?.artists || []).map((a: any) => a.name).join(', ') }}
             </template>
 
-            <!-- Popularity -->
             <template #item.popularity="{ item }">
               <div class="d-flex align-center">
                 <span class="me-2">{{ item?.popularity || 0 }}%</span>
@@ -205,7 +185,6 @@ onMounted(fetchArtistData);
               </div>
             </template>
 
-            <!-- Action -->
             <template #item.action="{ item }">
               <v-btn icon variant="text" color="green-darken-1" :href="item.external_urls?.spotify" target="_blank">
                 <Icon icon="mdi:spotify" width="20" height="20" />
